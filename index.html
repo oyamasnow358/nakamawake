@@ -1239,6 +1239,7 @@ function jaSay(t) {
   function buildPrint() {
     const th = themeById(pr.theme) || THEMES[0];
     const co = prCardOpts(pr.type);
+    if (pr.bins !== 'auto' && +pr.bins > maxBins(th)) pr.bins = maxBins(th) <= 2 ? 'auto' : maxBins(th);
     if (pr.type !== 'odd' && !co.some(o => String(o[0]) === String(pr.cards))) pr.cards = co[pr.type === 'circle' ? 1 : Math.min(1, co.length - 1)][0];
     const pages = [], answers = [];
     for (let p = 0; p < pr.pages; p++) {
@@ -1347,13 +1348,21 @@ function jaSay(t) {
     const typ = PR_TYPES.find(t => t.id === pr.type);
     const cardOpts = prCardOpts(pr.type);
     const prev = h('div', { class: 'prprev', id: 'prPrev' });
+    // はこの かずは テーマに ある かずまで（くだもの と やさい は 2つ だけ など）
+    function binSeg() {
+      const th = themeById(pr.theme) || THEMES[0], mx = maxBins(th);
+      const names = th.bins ? th.bins.filter(b => b.items && b.items.length).map(b => b.n).join('・') : '';
+      if (mx <= 2) return [h('div', { class: 'seglabel' }, 'はこの かず'), h('p', { class: 'note' }, 'この テーマの はこは 2つ です' + (names ? '（' + names + '）' : '') + '。はこを ふやしたい ときは、はこが 3つ いじょう ある テーマ（3しょく・きせつ・いろ など）を えらんでください。')];
+      const opts = [['auto', 'おまかせ']]; for (let n = 2; n <= mx; n++) opts.push([n, String(n)]);
+      return seg('はこの かず', 'bins', opts).concat(names && th.bins.length > mx ? [h('p', { class: 'note' }, 'はこは ' + names + ' から えらばれます。')] : []);
+    }
     P.append(
       h('div', { class: 'panel-head' }, h('h2', null, '🖨️ A4 プリント'), h('button', { type: 'button', class: 'btn ok', onclick: closePrint }, 'とじる')),
       h('div', { class: 'prgrid' },
         h('div', { class: 'prctl' },
           h('div', { class: 'seglabel' }, 'テーマ'), sel,
           seg('プリントの しゅるい', 'type', PR_TYPES.map(t => [t.id, t.n])), h('p', { class: 'note' }, typ ? typ.d : ''),
-          pr.type === 'line' || pr.type === 'cut' ? seg('はこの かず', 'bins', [['auto', 'おまかせ'], [2, '2'], [3, '3'], [4, '4']]) : null,
+          pr.type === 'line' || pr.type === 'cut' ? binSeg() : null,
           pr.type === 'odd' ? seg('もんだいの かず', 'rows', [[4, '4'], [5, '5'], [6, '6']]) : seg('カードの かず', 'cards', cardOpts),
           seg('ことば', 'words', [[true, 'なまえを かく'], [false, 'えだけ']]),
           seg('こたえの ページ', 'answer', [[true, 'つける'], [false, 'つけない']]),
