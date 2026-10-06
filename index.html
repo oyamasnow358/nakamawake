@@ -1384,6 +1384,28 @@ function jaSay(t) {
     setTimeout(() => { window.print(); }, 60);
   }
   window.addEventListener('afterprint', () => { $('#printRoot').innerHTML = ''; });
+  // ほかの アプリ（やすみの しゅくだい メーカー など）から プリントを つくる ための まどぐち
+  window.MieelPrintAPI = {
+    version: 1,
+    app: { id: 'nakamawake', title: 'なかまわけ', icon: '🧺' },
+    list() {
+      const themes = allThemes().map(t => [t.id, t.name]);
+      return PR_TYPES.map(t => ({ id: t.id, name: t.n.replace(/^\S+\s/, ''), icon: t.n.split(' ')[0], params: [
+        { key: 'theme', label: 'テーマ', opts: themes, def: 'fruitveg' },
+        t.id === 'line' || t.id === 'cut' ? { key: 'bins', label: 'はこの かず', opts: [['auto', 'おまかせ'], [2, '2'], [3, '3'], [4, '4']], def: 'auto' } : null,
+        t.id === 'odd' ? { key: 'rows', label: 'もんだいの かず', opts: [[4, '4'], [5, '5'], [6, '6']], def: 5 } : { key: 'cards', label: 'カードの かず', opts: prCardOpts(t.id), def: prCardOpts(t.id)[1] ? prCardOpts(t.id)[1][0] : prCardOpts(t.id)[0][0] },
+        { key: 'words', label: 'ことば', opts: [[true, 'なまえを かく'], [false, 'えだけ']], def: true },
+        { key: 'answer', label: 'こたえ', opts: [[false, 'なし'], [true, 'こたえの ページを つける']], def: false }
+      ].filter(Boolean) }));
+    },
+    build(id, params) {
+      const keep = Object.assign({}, pr);
+      Object.assign(pr, { type: id, pages: 1, answer: false, words: true, bins: 'auto' }, params || {}, { type: id });
+      ['answer', 'words'].forEach(k => { pr[k] = pr[k] === true || pr[k] === 'true'; });
+      try { buildPrint(); return Promise.resolve({ pages: pr.html.slice(), css: document.querySelector('style').textContent }); }
+      finally { const h2 = pr.html; Object.assign(pr, keep); pr.html = keep.html || h2; }
+    }
+  };
 
   /* ============================================================
      先生用せってい
