@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="なかまわけ">
+<meta name="theme-color" content="#F3F8EE">
+<title>なかまわけ｜MieeL</title>
+<link rel="apple-touch-icon" id="touchIcon" href="">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%BA%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #F3F8EE; --ink: #1F2937; --sub: #6B7280; --line: #DDE7D0; --main: #2F9E44; --main-d: #237A34;
+    --blue: #1C7ED6; --blue-d: #1864AB; --or: #E8590C; --or-d: #B8450A; --pink: #F06595;
+    --mieel: radial-gradient(circle at 50% 0%,#1B8FE8 0%,#2BB8D6 28%,#3FCB9E 45%,#8FD24A 58%,#F4D027 72%,#F7941E 100%);
+    --emoji: "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--bg); color: var(--ink); font-family: "Hiragino Maru Gothic ProN","ヒラギノ丸ゴ ProN","BIZ UDPGothic","Yu Gothic UI","Meiryo",system-ui,sans-serif; font-weight: 700;
+    word-break: keep-all; overflow-wrap: anywhere; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: manipulation; overscroll-behavior: none;
+    display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+  button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+  .emo { font-family: var(--emoji); font-weight: 400; line-height: 1; }
+  .topbar { flex: none; display: flex; align-items: center; gap: 10px; padding: 6px 14px; min-height: 58px; }
+  .brand { flex: 1; display: flex; justify-content: center; align-items: center; gap: 12px; color: #7F9870; font-size: 15px; letter-spacing: .08em; min-width: 0; }
+  .mieel-brand { display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+  .orb-mini { width: 22px; height: 22px; border-radius: 50%; background: var(--mieel); flex: none; }
+  .mieel-brand strong { font-size: 16px; color: var(--ink); }
+  .mieel-brand .url { font-size: 12px; color: var(--sub); font-weight: 600; }
+  @media (max-width: 699px) { .topbar .url, .topbar .appname { display: none; } }
+  .tbtn { height: 48px; min-width: 48px; padding: 0 14px; border-radius: 999px; border: 3px solid var(--line); background: #fff; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .tbtn[hidden] { display: none; }
+  .gear { position: relative; width: 50px; height: 50px; border-radius: 50%; border: none; background: transparent; opacity: .35; font-size: 26px; display: grid; place-items: center; }
+  .gear::after { content: ""; position: absolute; inset: 2px; border-radius: 50%; border: 4px solid transparent; }
+  .gear.pressing { opacity: 1; }
+  .gear.pressing::after { border-color: var(--blue); animation: ring 1.5s linear forwards; }
+  @keyframes ring { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+  main { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 0 16px 14px; }
+  .screen { flex: 1; min-height: 0; display: flex; flex-direction: column; animation: fadein .25s ease-out; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes pop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes shake { 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
+  @keyframes bump { 40% { transform: scale(1.08); } }
+  .big-btn { min-width: min(320px, 78vw); min-height: 86px; padding: 0 30px; border: none; border-radius: 999px; color: #fff; font-size: clamp(24px, 3.2vw, 36px); display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
+  .big-btn.go { background: var(--main); box-shadow: 0 8px 0 var(--main-d); }
+  .big-btn.blue { background: var(--blue); box-shadow: 0 8px 0 var(--blue-d); }
+  .big-btn.or { background: var(--or); box-shadow: 0 8px 0 var(--or-d); }
+  .big-btn:active { transform: translateY(6px); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
+  .actions { display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap; }
+  .round-btn { width: 60px; height: 60px; flex: none; border-radius: 50%; border: 4px solid var(--line); background: #fff; font-size: 28px; box-shadow: 0 4px 0 var(--line); display: grid; place-items: center; }
+  .round-btn:active { transform: translateY(3px); box-shadow: none; }
+  .shp { display: block; }
+
+  /* ---------- ホーム ---------- */
+  .home { gap: 12px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px; }
+  .title { font-size: clamp(28px, 4vw, 44px); text-align: center; margin: 2px 0 2px; }
+  .title small { display: block; font-size: 15px; color: var(--sub); font-weight: 500; margin-top: 4px; }
+  .modes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; flex: none; }
+  .mode { display: flex; align-items: center; gap: 12px; border: 4px solid var(--line); background: #fff; border-radius: 24px; padding: 10px 14px; text-align: left; box-shadow: 0 5px 0 rgba(0,0,0,.08); }
+  .mode .emo { font-size: 42px; flex: none; }
+  .mode .tx { font-size: clamp(18px, 2.2vw, 25px); line-height: 1.25; }
+  .mode small { display: block; font-size: 13px; color: var(--sub); font-weight: 500; }
+  .mode.on { border-color: var(--main); background: #EBFBEE; box-shadow: 0 5px 0 var(--main-d); }
+  .groups { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 2px 0 6px; flex: none; }
+  .groups::-webkit-scrollbar { display: none; }
+  .groups button { flex: none; border: 3px solid var(--line); background: #fff; border-radius: 999px; padding: 9px 16px; font-size: 16px; white-space: nowrap; }
+  .groups button.on { border-color: var(--ink); background: #FFF3BF; }
+  .themes { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; padding: 2px 2px 10px; }
+  .tcard { border: 4px solid var(--line); background: #fff; border-radius: 24px; padding: 14px 10px 12px; display: flex; flex-direction: column; align-items: center; gap: 6px; box-shadow: 0 6px 0 rgba(0,0,0,.08); text-align: center; }
+  .tcard:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,.08); }
+  .tcard .ti { font-size: 48px; line-height: 1.1; min-height: 54px; display: grid; place-items: center; }
+  .tcard .ti.txt { font-family: inherit; font-weight: 900; color: var(--main); }
+  .tcard .tn { font-size: 17px; line-height: 1.35; }
+  .tcard .tb { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; }
+  .tcard .tb span { width: 32px; height: 32px; border-radius: 9px; border: 3px solid var(--c, #ADB5BD); display: grid; place-items: center; font-size: 18px; background: #fff; overflow: hidden; }
+  .tcard .tb span .shp { width: 22px; height: 22px; }
+  .tcard .tb span.t { font-family: inherit; font-weight: 900; font-size: 15px; color: var(--c); }
+  .tcard.rand { background: linear-gradient(#FFF9DB, #fff 70%); border-color: #FFE066; }
+  .tcard.mine { border-style: dashed; }
+  .empty-note { grid-column: 1 / -1; text-align: center; color: var(--sub); font-weight: 500; padding: 30px 10px; line-height: 1.8; }
+
+  /* ---------- あそぶ ---------- */
+  .play { gap: 10px; }
+  .ptop { display: flex; align-items: center; gap: 10px; flex: none; min-height: 60px; }
+  .ask { flex: 1; text-align: center; font-size: clamp(21px, 2.8vw, 32px); line-height: 1.25; }
+  .ask small { display: block; font-size: .55em; color: var(--sub); font-weight: 500; }
+  .dots { display: flex; gap: 6px; flex: none; }
+  .dots i { width: 16px; height: 16px; border-radius: 50%; background: #DEE2E6; }
+  .dots i.on { background: var(--main); }
+  .dots i.now { background: var(--or); transform: scale(1.25); }
+  .quit { position: relative; overflow: hidden; flex: none; border: 2px solid #DEE2E6; background: #fff; color: #868E96; font-size: 15px; padding: 10px 14px; border-radius: 999px; touch-action: none; }
+  .quit i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: #FFE3E3; }
+  .quit span { position: relative; }
+  .quit.pressing { color: #E03131; border-color: #FFA8A8; }
+  .quit.pressing i { width: 100%; transition: width 1.5s linear; }
+  .table { flex: 1; min-height: 0; display: grid; justify-content: center; align-content: center; gap: 14px; position: relative; --cs: 150px; }
+  .card { position: relative; width: var(--cs); height: var(--cs); background: #fff; border-radius: calc(var(--cs) * .16); border: 3px solid #E3E8DE; box-shadow: 0 6px 0 rgba(0,0,0,.1);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; touch-action: none; cursor: grab; transform: rotate(var(--rot, 0deg)); animation: pop .35s cubic-bezier(.2, 1.5, .4, 1) backwards; }
+  .card .v { font-family: var(--emoji); font-weight: 400; line-height: 1; font-size: calc(var(--cs) * .56); display: grid; place-items: center; pointer-events: none; }
+  .card.named .v { font-size: calc(var(--cs) * .46); }
+  .card .v .shp { width: calc(var(--cs) * .66); height: calc(var(--cs) * .66); }
+  .card.named .v .shp { width: calc(var(--cs) * .56); height: calc(var(--cs) * .56); }
+  .card .v img { width: calc(var(--cs) * .8); height: calc(var(--cs) * .62); object-fit: contain; border-radius: 10px; }
+  .card .v.k-text { font-family: inherit; font-weight: 900; color: #343A40; font-size: calc(var(--cs) * .52); }
+  .card .v.k-size.big { font-size: calc(var(--cs) * .66); }
+  .card .v.k-size.small { font-size: calc(var(--cs) * .24); }
+  .card .v.k-count { font-size: calc(var(--cs) * .16); }
+  .card .nm { font-size: max(12px, calc(var(--cs) * .12)); margin-top: 5%; text-align: center; line-height: 1.15; padding: 0 4px; pointer-events: none; }
+  .cnt { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; }
+  .cnt i { display: block; font-style: normal; font-family: var(--emoji); width: 1.12em; line-height: 1.12; text-align: center; }
+  .cnt.c1 { width: 3.6em; } .cnt.c1 i { font-size: 3.2em; }
+  .cnt.c2 { width: 4.7em; } .cnt.c2 i { font-size: 2.1em; }
+  .cnt.c3, .cnt.c4 { width: 4.3em; } .cnt.c3 i, .cnt.c4 i { font-size: 1.9em; }
+  .cnt.c5 { width: 5.4em; } .cnt.c5 i { font-size: 1.6em; }
+  .card.lifted, .card.gone { visibility: hidden; }
+  .card.gone { pointer-events: none; }
+  .card.sel { outline: 6px solid var(--blue); outline-offset: 2px; transform: translateY(-6px) rotate(var(--rot, 0deg)); }
+  .card.shake { animation: shake .45s; }
+  .card.fade { opacity: .25; transition: opacity .5s; pointer-events: none; }
+  .float { position: fixed; z-index: 60; margin: 0; pointer-events: none; animation: none; box-shadow: 0 18px 30px rgba(0,0,0,.25); }
+  .bins { flex: none; height: clamp(150px, 31vh, 290px); display: flex; gap: 12px; }
+  .bins.one { justify-content: center; }
+  .bins.one .bin { flex: 0 1 560px; }
+  .bin { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; border: 6px solid var(--c); border-radius: 26px; background: #fff; overflow: hidden; transition: transform .15s, box-shadow .15s; }
+  .bin::before { content: ""; position: absolute; inset: 0; background: var(--c); opacity: .09; pointer-events: none; }
+  .blabel { position: relative; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 6px 10px; border-bottom: 4px dashed var(--c); font-size: clamp(18px, 2.4vw, 29px); text-align: center; line-height: 1.2; min-height: 58px; }
+  .blabel small { display: block; font-size: .55em; color: var(--sub); font-weight: 500; }
+  .bic { font-family: var(--emoji); font-weight: 400; font-size: 1.5em; line-height: 1; flex: none; }
+  .bic.kana, .bic.num { font-family: inherit; font-weight: 900; color: var(--c); font-size: 1.7em; }
+  .blabel .shp { width: 1.7em; height: 1.7em; flex: none; }
+  .blabel img { width: 1.9em; height: 1.9em; object-fit: cover; border-radius: 8px; }
+  .bin.wordonly .blabel { font-size: clamp(24px, 3.2vw, 38px); }
+  .bbody { position: relative; flex: 1; display: flex; flex-wrap: wrap; align-content: flex-start; justify-content: center; gap: 4px; padding: 8px 8px 30px; overflow: hidden; }
+  .mini { width: 50px; height: 50px; display: grid; place-items: center; font-family: var(--emoji); font-weight: 400; font-size: 36px; line-height: 1; background: #fff; border-radius: 10px; box-shadow: 0 2px 0 rgba(0,0,0,.1); animation: pop .3s cubic-bezier(.2, 1.6, .4, 1); overflow: hidden; }
+  .mini .shp, .mini img { width: 40px; height: 40px; object-fit: contain; }
+  .mini.k-count { font-size: 8px; } .mini.k-size.small { font-size: 16px; } .mini.k-size.big { font-size: 40px; }
+  .mini.k-text { font-family: inherit; font-weight: 900; font-size: 26px; color: #343A40; }
+  .bcount { position: absolute; right: 10px; bottom: 7px; background: var(--c); color: #fff; border-radius: 999px; padding: 1px 11px; font-size: 17px; }
+  .bin.over { transform: scale(1.04); box-shadow: 0 0 0 9px rgba(47,158,68,.28); }
+  .bin.hint { animation: glow .7s ease-in-out infinite alternate; }
+  @keyframes glow { from { box-shadow: 0 0 0 0 rgba(250,176,5,0); } to { box-shadow: 0 0 0 13px rgba(250,176,5,.75); } }
+  .bin.ng { animation: shake .45s; }
+  .bin.ok { animation: bump .45s; }
+  .bins.choosing .bin { box-shadow: 0 0 0 6px rgba(28,126,214,.35); }
+  .popw { position: fixed; z-index: 65; transform: translate(-50%, -50%); font-size: 32px; font-weight: 900; -webkit-text-stroke: 5px #fff; paint-order: stroke fill; pointer-events: none; white-space: nowrap; animation: popw 1.1s ease-out forwards; }
+  @keyframes popw { 0% { transform: translate(-50%, -20%) scale(.4); opacity: 0; } 25% { transform: translate(-50%, -80%) scale(1.15); opacity: 1; } 75% { opacity: 1; } 100% { transform: translate(-50%, -140%) scale(1); opacity: 0; } }
+  .praise { position: fixed; left: 50%; top: 40%; transform: translate(-50%, -50%); font-size: clamp(54px, 9vw, 110px); font-weight: 900; white-space: nowrap; -webkit-text-stroke: 6px #fff; paint-order: stroke fill; pointer-events: none; z-index: 62; animation: praise 1.4s ease-out forwards; }
+  @keyframes praise { 0% { transform: translate(-50%, -50%) scale(.3); opacity: 0; } 20% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; } 75% { transform: translate(-50%, -54%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -70%) scale(1); opacity: 0; } }
+  .single .card { animation: pop .4s cubic-bezier(.2, 1.5, .4, 1) backwards; }
+  .left-n { position: absolute; right: 6px; bottom: 4px; color: var(--sub); font-size: 16px; font-weight: 500; }
+
+  /* ---------- けっか ---------- */
+  .result { align-items: center; justify-content: center; gap: 14px; text-align: center; overflow-y: auto; }
+  .result h1 { font-size: clamp(46px, 7vw, 86px); margin: 0; }
+  .rainbow-text { background: linear-gradient(90deg, #FF6B6B, #FFA94D, #FFD43B, #69DB7C, #4DABF7, #9775FA, #F783AC); -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% 100%; animation: rb 2s linear infinite; filter: drop-shadow(0 4px 0 #fff) drop-shadow(0 6px 0 rgba(0,0,0,.12)); }
+  @keyframes rb { to { background-position: 200% 0; } }
+  .stars { font-size: clamp(54px, 8vw, 90px); letter-spacing: 6px; }
+  .stars .off { filter: grayscale(1); opacity: .25; }
+  .rstat { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .rstat div { background: #fff; border: 4px solid var(--line); border-radius: 20px; padding: 8px 22px; font-size: 22px; }
+  .rstat small { display: block; font-size: 13px; color: var(--sub); font-weight: 500; }
+  .dance { font-size: clamp(80px, 13vh, 130px); animation: dance .7s ease-in-out infinite alternate; }
+  @keyframes dance { from { transform: translateY(0) rotate(-8deg); } to { transform: translateY(-18px) rotate(8deg); } }
+
+  .toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); background: rgba(17,24,39,.9); color: #fff; padding: 14px 22px; border-radius: 14px; font-size: 18px; z-index: 95; display: none; max-width: 90vw; text-align: center; }
+  .toast.show { display: block; }
+  body.calm *, body.calm *::before, body.calm *::after { animation: none !important; transition: none !important; }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  @media (orientation: portrait) {
+    .bins { height: clamp(150px, 25vh, 300px); }
+    .modes { grid-template-columns: 1fr; }
+    .mode { padding: 8px 14px; }
+    .mode .emo { font-size: 34px; }
+  }
+  @media (max-width: 640px) {
+    .modes { grid-template-columns: 1fr; gap: 8px; }
+    .themes { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .tcard .ti { font-size: 38px; min-height: 44px; }
+    .tcard .tn { font-size: 15px; }
+    .bins { gap: 6px; }
+    .bin { border-width: 4px; border-radius: 18px; }
+    .blabel { font-size: 16px; min-height: 46px; gap: 4px; flex-direction: column; }
+    .quit span { font-size: 12px; }
+  }
+
+  /* ---------- 先生用・プリント ---------- */
+  .modal { position: fixed; inset: 0; z-index: 90; background: rgba(17,24,39,.55); display: none; align-items: flex-start; justify-content: center; padding: 24px 12px; overflow-y: auto; -webkit-user-select: text; user-select: text; }
+  .modal.open { display: flex; }
+  .panel { width: min(100%, 860px); background: #fff; border-radius: 24px; padding: 22px clamp(16px, 4vw, 32px) 28px; font-weight: 400; font-size: 17px; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+  .panel.wide { width: min(100%, 1180px); }
+  .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .panel h2 { margin: 0; font-size: 25px; font-weight: 700; }
+  .panel h3 { margin: 26px 0 10px; font-size: 20px; font-weight: 700; padding-left: 10px; border-left: 6px solid var(--main); }
+  .note { color: var(--sub); font-size: 15px; line-height: 1.6; margin: 6px 0; }
+  .seglabel { margin: 12px 0 6px; font-weight: 700; font-size: 15px; }
+  .seg { display: flex; gap: 8px; flex-wrap: wrap; }
+  .seg button { flex: 1; min-width: 90px; padding: 11px 8px; font-size: 15px; font-weight: 700; border-radius: 12px; border: 2px solid #CED4DA; background: #fff; }
+  .seg button.on { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .panel label.row { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #F1F3F5; }
+  .panel label.row > span:first-child { flex: 1; }
+  .panel input[type=checkbox] { width: 30px; height: 30px; accent-color: var(--main); flex: none; }
+  .panel input[type=range] { width: 200px; }
+  .panel input[type=text], .panel select { font: inherit; padding: 9px 12px; border: 2px solid #CED4DA; border-radius: 12px; background: #fff; }
+  .btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; align-items: center; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; border: none; border-radius: 12px; padding: 11px 18px; font-size: 16px; font-weight: 700; background: #E9ECEF; color: var(--ink); }
+  .btn.ok { background: var(--main); color: #fff; }
+  .btn.blue { background: var(--blue); color: #fff; }
+  .btn.warn { background: #FFF0F0; color: #C92A2A; }
+  .crow { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 6px 0; }
+  .ctheme { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 2px solid #E9ECEF; border-radius: 14px; margin: 6px 0; }
+  .ctheme small { color: var(--sub); }
+  .editor { background: #F8F9FA; border-radius: 16px; padding: 12px; margin: 4px 0 14px; }
+  .ebin { background: #fff; border: 4px solid var(--c); border-radius: 16px; padding: 10px 12px; margin: 10px 0; }
+  .colors { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0; }
+  .cchip { width: 34px; height: 34px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 2px #CED4DA; }
+  .cchip.on { box-shadow: 0 0 0 4px var(--ink); }
+  .eitems { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  .eitem { display: inline-flex; align-items: center; gap: 6px; border: 2px solid #E9ECEF; border-radius: 12px; padding: 4px 6px 4px 4px; font-size: 15px; background: #fff; }
+  .eitem .ev { width: 38px; height: 38px; display: grid; place-items: center; font-family: var(--emoji); font-size: 28px; overflow: hidden; border-radius: 8px; }
+  .eitem .ev img, .eitem .ev .shp { width: 38px; height: 38px; object-fit: cover; }
+  .eitem .ev.k-text { font-family: inherit; font-weight: 900; font-size: 22px; }
+  .eitem button { border: none; background: #FFF0F0; color: #C92A2A; border-radius: 8px; width: 28px; height: 28px; }
+  .loglist { font-size: 14px; color: var(--sub); line-height: 1.8; }
+  .mieel-foot { margin-top: 26px; padding-top: 14px; border-top: 1px solid #E9ECEF; text-align: center; color: var(--sub); font-size: 13px; line-height: 1.8; }
+  .mieel-foot .mieel-brand { justify-content: center; }
+  .mieel-foot a { color: var(--blue); font-weight: 700; text-decoration: none; font-size: 14px; }
+  .prgrid { display: grid; grid-template-columns: minmax(280px, 360px) minmax(0, 1fr); gap: 18px; margin-top: 10px; }
+  .prctl select { width: 100%; }
+  .prprev { background: #E9ECEF; border-radius: 16px; padding: 12px; max-height: 76vh; overflow-y: auto; }
+  .pwrap { margin: 0 auto 14px; box-shadow: 0 4px 14px rgba(0,0,0,.18); overflow: hidden; background: #fff; }
+  .pwrap .ppage { transform-origin: top left; }
+  @media (max-width: 820px) { .prgrid { grid-template-columns: 1fr; } }
+
+  /* ---------- A4 プリント ---------- */
+  #printRoot { display: none; }
+  .ppage { width: 210mm; height: 297mm; padding: 11mm 12mm 9mm; box-sizing: border-box; background: #fff; color: #111; position: relative; overflow: hidden;
+    font-family: "Hiragino Maru Gothic ProN","BIZ UDPGothic","Yu Gothic",sans-serif; font-weight: 700; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .phead { display: flex; justify-content: space-between; align-items: flex-end; gap: 4mm; border-bottom: .5mm solid #333; padding-bottom: 2mm; }
+  .ptitle { font-size: 6.6mm; }
+  .ptitle .pans { color: #C92A2A; border: .4mm solid #C92A2A; border-radius: 2mm; padding: 0 2mm; margin-left: 2mm; font-size: 4.6mm; }
+  .pname { font-size: 4.4mm; white-space: nowrap; }
+  .pname span { display: inline-block; width: 50mm; border-bottom: .3mm solid #333; margin-left: 2mm; }
+  .pinst { font-size: 5.4mm; margin: 3mm 0 2mm; }
+  .pbody { position: relative; height: 240mm; }
+  .pfoot { position: absolute; bottom: 4mm; right: 12mm; font-size: 3mm; color: #888; }
+  .pabs { position: absolute; }
+  .pcell { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .pv { display: flex; align-items: center; justify-content: center; font-family: var(--emoji); font-weight: 400; line-height: 1; overflow: hidden; }
+  .pv .shp, .pv img { width: 100%; height: 100%; object-fit: contain; }
+  .pv.k-text { font-family: inherit; font-weight: 900; }
+  .pn { font-size: 4mm; line-height: 1.1; margin-top: .6mm; }
+  .pbox { border: .6mm solid #333; border-radius: 3mm; background: #fff; }
+  .pdot { width: 3.4mm; height: 3.4mm; border-radius: 50%; background: #111; }
+  .pbinh { display: flex; align-items: center; justify-content: center; gap: 2mm; font-size: 6mm; padding: 2mm; border-bottom: .5mm dashed #555; }
+  .pbinh .bic { font-size: 9mm; } .pbinh .shp { width: 10mm; height: 10mm; } .pbinh img { width: 11mm; height: 11mm; object-fit: cover; }
+  .pbinh .bic.kana, .pbinh .bic.num { color: #111; font-size: 10mm; }
+  .pcut { border: .4mm dashed #666; }
+  .pmark { position: absolute; inset: 0; pointer-events: none; }
+  @media print {
+    @page { size: A4 portrait; margin: 0; }
+    html, body { height: auto !important; overflow: visible !important; display: block !important; background: #fff !important; padding: 0 !important; }
+    body > *:not(#printRoot) { display: none !important; }
+    #printRoot { display: block !important; }
+    #printRoot .ppage { page-break-after: always; break-after: page; }
+    #printRoot .ppage:last-child { page-break-after: auto; break-after: auto; }
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <button class="tbtn" id="homeBtn" type="button" hidden>🏠 テーマ</button>
+  <div class="brand"><div class="mieel-brand"><span class="orb-mini"></span><strong>MieeL</strong><span class="url">mieel-support-school.com</span></div><span class="appname">なかまわけ</span></div>
+  <button class="tbtn" id="printBtn" type="button" aria-label="A4プリントを つくる">🖨️ <span class="appname">プリント</span></button>
+  <button class="gear" id="gear" type="button" aria-label="先生用せってい（ながおし）">⚙️</button>
+</header>
+<main id="view"></main>
+<div class="modal" id="settings" role="dialog" aria-modal="true" aria-label="先生用せってい"><div class="panel" id="settingsPanel"></div></div>
+<div class="modal" id="printModal" role="dialog" aria-modal="true" aria-label="プリント"><div class="panel wide" id="printPanel"></div></div>
+<div class="toast" id="toast"></div>
+<div id="printRoot"></div>
+<script>
+(function () {
+  'use strict';
+
+  /* ============================================================
+     小さな道具
+     ============================================================ */
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const rint = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const shuffle = a => { const r = a.slice(); for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; };
+  const uid = () => Math.random().toString(36).slice(2, 9);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  // ひらがな・カタカナ・漢字・英数字だけの もじ（えもじ ではない）
+  const isText = s => /^[぀-ヿ一-鿿A-Za-z0-9ー]+$/.test(String(s || ''));
+  function h(tag, props) {
+    const el = document.createElement(tag);
+    if (props) Object.keys(props).forEach(k => {
+      const v = props[k]; if (v === null || v === undefined || v === false) return;
+      if (k === 'class') el.className = v; else if (k === 'html') el.innerHTML = v; else if (k.slice(0, 2) === 'on') el.addEventListener(k.slice(2), v); else el.setAttribute(k, v === true ? '' : v);
+    });
+    (function add(list) { list.forEach(c => { if (c === null || c === undefined || c === false) return; if (Array.isArray(c)) add(c); else el.appendChild(typeof c === 'string' || typeof c === 'number' ? document.createTextNode(String(c)) : c); }); })(Array.prototype.slice.call(arguments, 2));
+    return el;
+  }
+  // 「🍎りんご 🍌バナナ」→ [{e:'🍎', n:'りんご'}, …]（なまえの _ は スペース）
+  function P(s) {
+    return s.trim().split(/\s+/).map(t => {
+      const m = t.match(/^(.+?)([぀-ヿ一-鿿].*)$/);
+      return m && !isText(m[1]) ? { e: m[1], n: m[2].replace(/_/g, ' ') } : { e: t, n: '' };
+    });
+  }
+
+  /* ============================================================
+     いろ・かたち
+     ============================================================ */
+  const COLORS = [
+    { n: 'あか', c: '#E03131' }, { n: 'あお', c: '#1C7ED6' }, { n: 'きいろ', c: '#FCC419' }, { n: 'みどり', c: '#2F9E44' },
+    { n: 'オレンジ', c: '#F76707' }, { n: 'むらさき', c: '#7048E8' }, { n: 'ピンク', c: '#F06595' }, { n: 'ちゃいろ', c: '#8D5524' },
+    { n: 'くろ', c: '#212529' }, { n: 'しろ', c: '#FFFFFF', b: '#ADB5BD' }
+  ];
+  const colorOf = n => COLORS.find(c => c.n === n);
+  const SHAPES = [{ id: 'circle', n: 'まる' }, { id: 'tri', n: 'さんかく' }, { id: 'square', n: 'しかく' }, { id: 'star', n: 'ほし' }, { id: 'heart', n: 'ハート' }, { id: 'diamond', n: 'ひしがた' }];
+  const STAR = (() => { const p = []; for (let i = 0; i < 10; i++) { const r = i % 2 ? 19 : 45, a = -Math.PI / 2 + i * Math.PI / 5; p.push((50 + r * Math.cos(a)).toFixed(1) + ',' + (53 + r * Math.sin(a)).toFixed(1)); } return p.join(' '); })();
+  const SHAPE_PATH = {
+    circle: '<circle cx="50" cy="50" r="41"/>', tri: '<polygon points="50,9 94,87 6,87"/>', square: '<rect x="12" y="12" width="76" height="76" rx="5"/>',
+    star: '<polygon points="' + STAR + '"/>', diamond: '<polygon points="50,5 93,50 50,95 7,50"/>',
+    heart: '<path d="M50 89 C20 67 5 51 5 32 C5 17 17 7 31 7 C40 7 46 12 50 19 C54 12 60 7 69 7 C83 7 95 17 95 32 C95 51 80 67 50 89 Z"/>'
+  };
+  function shapeSVG(id, fill, stroke, sw) {
+    return '<svg class="shp" viewBox="0 0 100 100" aria-hidden="true"><g fill="' + fill + '" stroke="' + (stroke || '#343A40') + '" stroke-width="' + (sw || 3) + '" stroke-linejoin="round">' + (SHAPE_PATH[id] || SHAPE_PATH.circle) + '</g></svg>';
+  }
+  function swatchSVG(c) {
+    return '<svg class="shp" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 7 C74 7 93 23 93 47 C93 72 75 93 50 93 C25 93 7 76 7 52 C7 27 26 7 50 7Z" fill="' + c + '" stroke="#343A40" stroke-width="3"/><ellipse cx="35" cy="33" rx="13" ry="8" fill="#fff" opacity=".45"/></svg>';
+  }
+  // かずの はこの しるし（さいころの ような てん）
+  function dotsSVG(n) {
+    const P5 = { 1: [[50, 50]], 2: [[28, 50], [72, 50]], 3: [[24, 26], [50, 50], [76, 74]], 4: [[28, 28], [72, 28], [28, 72], [72, 72]], 5: [[26, 26], [74, 26], [50, 50], [26, 74], [74, 74]] };
+    return '<svg class="shp" viewBox="0 0 100 100" aria-hidden="true"><rect x="4" y="4" width="92" height="92" rx="18" fill="#fff" stroke="#343A40" stroke-width="5"/>' + (P5[n] || []).map(p => '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="11" fill="#343A40"/>').join('') + '</svg>';
+  }
+  function sizeSVG(big) { return '<svg class="shp" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="' + (big ? 44 : 15) + '" fill="#495057"/></svg>'; }
+  const BIN_COLORS = ['#E03131', '#1C7ED6', '#2F9E44', '#F08C00', '#7048E8', '#F06595', '#0C8599', '#8D5524'];
+
+  /* ============================================================
+     テーマ（なかまわけの しゅるい）
+     g：グループ、bins：[なまえ, マーク, いろ, しなもの, せつめい]
+     ============================================================ */
+  const GROUPS = [
+    { id: 'all', n: 'ぜんぶ', e: '🌈' }, { id: 'iro', n: 'いろ・かたち', e: '🎨' }, { id: 'tabe', n: 'たべもの', e: '🍙' }, { id: 'iki', n: 'いきもの', e: '🐾' },
+    { id: 'nori', n: 'のりもの・もの', e: '🚗' }, { id: 'kura', n: 'くらし・きせつ', e: '🌸' }, { id: 'koto', n: 'ことば・かず', e: '🔤' }, { id: 'custom', n: 'じぶんで つくった', e: '✏️' }
+  ];
+  const T = (id, g, name, icon, bins, ex) => Object.assign({ id, g, name, icon, bins: bins.map(b => ({ n: b[0], i: b[1], c: b[2], items: P(b[3]), sub: b[4] || '' })) }, ex || {});
+  const G_ = (id, g, name, icon, gen, ex) => Object.assign({ id, g, name, icon, gen }, ex || {});
+  const SAMEPOOL = P('🍎りんご 🍌バナナ 🚗くるま 🐶いぬ 🐱ねこ ⚽ボール 🌸さくら ⭐ほし 🍙おにぎり 🐟さかな 🚌バス ✏️えんぴつ 🎈ふうせん 🐘ぞう 🍓いちご 🚃でんしゃ 🌙つき ☂️かさ 👟くつ 🧸ぬいぐるみ 🐰うさぎ 🍩ドーナツ 🚒しょうぼうしゃ 🌻ひまわり');
+  const SIZEPOOL = P('🐘ぞう 🍎りんご 🚗くるま 🐶いぬ ⭐ほし 🌸さくら ⚽ボール 🐟さかな 🍓いちご 🎈ふうせん 🐰うさぎ 🍩ドーナツ 🌻ひまわり 🐢かめ');
+  const COUNTPOOL = ['🍎', '🍌', '🚗', '🐶', '⭐', '🌸', '⚽', '🐟', '🍓', '🎈', '🐰', '🍩', '🐤', '🍙'];
+
+  const THEMES = [
+    // ---- いろ・かたち ----
+    G_('color4', 'iro', 'いろ（4しょく）', '🎨', 'color', { pool: 4 }),
+    G_('color10', 'iro', 'いろ（いろいろ）', '🌈', 'color', { pool: 10 }),
+    T('objcolor', 'iro', 'ものの いろ', '🍎', [
+      ['あか', '', '#E03131', '🍎りんご 🍓いちご 🍅トマト 🍒さくらんぼ 🚒しょうぼうしゃ 🌹ばら 🌶️とうがらし 🎈ふうせん 📮ポスト ❤️ハート'],
+      ['あお', '', '#1C7ED6', '🫐ブルーベリー 👖ジーンズ 🐳くじら 🚙くるま 🦋ちょうちょ 💧みず 🧊こおり 🌊なみ 💙ハート'],
+      ['きいろ', '', '#FAB005', '🍌バナナ 🍋レモン 🌻ひまわり ⭐ほし 🐤ひよこ 🌽とうもろこし 🧀チーズ 🚕タクシー 💛ハート'],
+      ['みどり', '', '#2F9E44', '🥦ブロッコリー 🥒きゅうり 🍀クローバー 🐸かえる 🍏あおりんご 🌲き 🐢かめ 🦖きょうりゅう 💚ハート'],
+      ['オレンジ', '', '#F76707', '🍊みかん 🥕にんじん 🎃かぼちゃ 🦊きつね 🏀ボール 🐯とら 🦐えび 🧡ハート'],
+      ['むらさき', '', '#7048E8', '🍇ぶどう 🍆なす ☂️かさ 🔮すいしょう 🍠さつまいも 💜ハート'],
+      ['ピンク', '', '#F06595', '🌸さくら 🐷ぶた 🎀リボン 🦩フラミンゴ 🌷チューリップ 🍑もも 🐙たこ 💗ハート'],
+      ['ちゃいろ', '', '#8D5524', '🐻くま 🍫チョコレート 🥔じゃがいも 🌰くり 🪵まるた 🐿️りす 🍪クッキー 🤎ハート'],
+      ['くろ', '', '#212529', '🐈‍⬛くろねこ 🕷️くも 🎩ぼうし 🐜あり 🦍ゴリラ 🎱ボール 🖤ハート'],
+      ['しろ', '', '#ADB5BD', '🍚ごはん 🐑ひつじ ☁️くも ⛄ゆきだるま 🥚たまご 🦢はくちょう 🥛ぎゅうにゅう 🤍ハート']
+    ], { colorBins: true, defN: 3 }),
+    G_('shape', 'iro', 'かたち', '🔺', 'shape'),
+    T('objshape', 'iro', 'ものの かたち', '⚽', [
+      ['まる', '', '#E03131', '⚽ボール 🍊みかん 🌕つき 🍩ドーナツ 🍪クッキー ⏰とけい 🍘せんべい 🥏フリスビー'],
+      ['しかく', '', '#1C7ED6', '📺テレビ 📦はこ 🖼️がくぶち 📱スマホ 🧱れんが 🗓️カレンダー 📕ほん 🍫いたチョコ'],
+      ['さんかく', '', '#2F9E44', '🍙おにぎり ⛺テント 🍕ピザ 📐じょうぎ 🎄ツリー ⚠️ひょうしき 🧀チーズ']
+    ], { shapeBins: true }),
+    G_('size', 'iro', 'おおきさ', '🐘', 'size'),
+    // ---- たべもの ----
+    T('fruitveg', 'tabe', 'くだもの と やさい', '🍎', [
+      ['くだもの', '🍎', '#E03131', '🍎りんご 🍌バナナ 🍇ぶどう 🍓いちご 🍊みかん 🍑もも 🍒さくらんぼ 🍍パイナップル 🥝キウイ 🍉すいか 🍈メロン 🍐なし 🥭マンゴー 🍋レモン'],
+      ['やさい', '🥕', '#2F9E44', '🥕にんじん 🥦ブロッコリー 🍅トマト 🥒きゅうり 🌽とうもろこし 🍆なす 🥔じゃがいも 🧅たまねぎ 🫑ピーマン 🥬はくさい 🍄きのこ 🧄にんにく 🎃かぼちゃ']
+    ]),
+    T('3shoku', 'tabe', '3しょく（あか・きいろ・みどり）', '🍱', [
+      ['あか', '🥩', '#E03131', '🥩にく 🍗とりにく 🐟さかな 🥚たまご 🥛ぎゅうにゅう 🧀チーズ 🫘まめ 🦐えび 🥓ベーコン', 'からだを つくる'],
+      ['きいろ', '🍚', '#FAB005', '🍚ごはん 🍞パン 🍜めん 🥔じゃがいも 🍠さつまいも 🧈バター 🍙おにぎり 🍝スパゲッティ 🥐クロワッサン', 'ちからに なる'],
+      ['みどり', '🥦', '#2F9E44', '🥕にんじん 🥦ブロッコリー 🍅トマト 🥬キャベツ 🍎りんご 🍊みかん 🍄きのこ 🥒きゅうり 🍌バナナ 🧅たまねぎ', 'ちょうしを ととのえる']
+    ]),
+    T('meal', 'tabe', 'しょくじの なかま', '🍽️', [
+      ['しゅしょく', '🍚', '#FAB005', '🍚ごはん 🍙おにぎり 🍞しょくパン 🥐クロワッサン 🍜ラーメン 🍝スパゲッティ 🥖フランスパン 🍛カレーライス'],
+      ['おかず', '🍗', '#E8590C', '🍗からあげ 🍳めだまやき 🍤エビフライ 🥩ステーキ 🍢おでん 🥗サラダ 🍖にく 🥟ぎょうざ'],
+      ['のみもの', '🥛', '#1C7ED6', '🥛ぎゅうにゅう 🧃ジュース 🍵おちゃ ☕コーヒー 🥤ソーダ 🧋タピオカ 💧みず'],
+      ['おやつ', '🍰', '#F06595', '🍰ケーキ 🍩ドーナツ 🍪クッキー 🍫チョコレート 🍦ソフトクリーム 🍮プリン 🧁カップケーキ 🍡だんご 🍬あめ']
+    ]),
+    T('hotcold', 'tabe', 'あたたかい・つめたい', '♨️', [
+      ['あたたかい', '♨️', '#E03131', '🍜ラーメン 🍲なべ 🍵おちゃ ☕コーヒー 🍛カレー 🍠やきいも 🥟ぎょうざ 🍢おでん'],
+      ['つめたい', '🧊', '#1C7ED6', '🍦ソフトクリーム 🍧かきごおり 🍨アイス 🧊こおり 🥤ジュース 🍮プリン']
+    ]),
+    T('foodornot', 'tabe', 'たべもの？ たべものじゃない？', '🍙', [
+      ['たべもの', '🍙', '#2F9E44', '🍙おにぎり 🍎りんご 🍞パン 🍰ケーキ 🍌バナナ 🍕ピザ 🍔ハンバーガー 🍤エビフライ 🍩ドーナツ 🍉すいか'],
+      ['たべものじゃない', '🚫', '#868E96', '✏️えんぴつ 🧸ぬいぐるみ 👟くつ 📱スマホ 🪑いす ⚽ボール 🔑かぎ 📚ほん 🧦くつした 🎒ランドセル']
+    ]),
+    T('where_food', 'tabe', 'どこで とれる？', '🌾', [
+      ['はたけ', '🌱', '#2F9E44', '🥕にんじん 🥔じゃがいも 🍅トマト 🥬はくさい 🌽とうもろこし 🍆なす 🥒きゅうり 🧅たまねぎ'],
+      ['うみ', '🌊', '#1C7ED6', '🐟さかな 🦐えび 🦑いか 🐙たこ 🦀かに 🐚かい'],
+      ['やま・き', '⛰️', '#8D5524', '🍄きのこ 🌰くり 🍎りんご 🍑もも 🍐なし 🍇ぶどう']
+    ]),
+    T('sweetsveg', 'tabe', 'おやつ と やさい', '🍩', [
+      ['おやつ', '🍩', '#F06595', '🍩ドーナツ 🍪クッキー 🍫チョコレート 🍦ソフトクリーム 🍮プリン 🧁カップケーキ 🍬あめ 🍭ペロペロキャンディ'],
+      ['やさい', '🥦', '#2F9E44', '🥦ブロッコリー 🥕にんじん 🍅トマト 🥒きゅうり 🍆なす 🥔じゃがいも 🫑ピーマン 🧅たまねぎ']
+    ]),
+    // ---- いきもの ----
+    T('animalbird', 'iki', 'どうぶつ と とり', '🐶', [
+      ['どうぶつ', '🐶', '#E8590C', '🐶いぬ 🐱ねこ 🐰うさぎ 🐻くま 🐼パンダ 🦁ライオン 🐯とら 🐘ぞう 🦒きりん 🐵さる 🐮うし 🐷ぶた 🐴うま 🦊きつね 🐨コアラ'],
+      ['とり', '🐦', '#1C7ED6', '🐔にわとり 🐦ことり 🦆あひる 🦉ふくろう 🐧ペンギン 🦅わし 🦜インコ 🦢はくちょう 🦩フラミンゴ 🦚くじゃく 🐤ひよこ']
+    ]),
+    T('ikimono4', 'iki', 'どうぶつ・とり・うみ・むし', '🐾', [
+      ['どうぶつ', '🐶', '#E8590C', '🐶いぬ 🐱ねこ 🐘ぞう 🦁ライオン 🐰うさぎ 🐻くま 🐮うし 🐵さる'],
+      ['とり', '🐦', '#1C7ED6', '🐔にわとり 🦆あひる 🦉ふくろう 🐧ペンギン 🦅わし 🦜インコ 🦢はくちょう 🐤ひよこ'],
+      ['うみの いきもの', '🐟', '#0C8599', '🐟さかな 🐠ねったいぎょ 🐡ふぐ 🦈さめ 🐬いるか 🐳くじら 🐙たこ 🦀かに'],
+      ['むし', '🐛', '#2F9E44', '🐛いもむし 🦋ちょうちょ 🐝はち 🐞てんとうむし 🐜あり 🦗バッタ 🪲かぶとむし 🦟か']
+    ]),
+    T('habitat', 'iki', 'どこに いる？（りく・うみ・そら）', '🌍', [
+      ['りく', '🌳', '#8D5524', '🐶いぬ 🐘ぞう 🦁ライオン 🐄うし 🐿️りす 🐰うさぎ 🐻くま 🦒きりん', 'あるく'],
+      ['うみ', '🌊', '#1C7ED6', '🐟さかな 🐙たこ 🐬いるか 🐳くじら 🦀かに 🦈さめ 🐠ねったいぎょ 🦑いか', 'およぐ'],
+      ['そら', '☁️', '#5C7CFA', '🐦ことり 🦅わし 🦋ちょうちょ 🐝はち 🦉ふくろう 🦇こうもり 🕊️はと', 'とぶ']
+    ]),
+    T('petfarmzoo', 'iki', 'ペット・ぼくじょう・どうぶつえん', '🏡', [
+      ['ペット', '🏠', '#F06595', '🐶いぬ 🐱ねこ 🐹ハムスター 🐰うさぎ 🐟きんぎょ 🦜インコ 🐢かめ'],
+      ['ぼくじょう', '🚜', '#2F9E44', '🐮うし 🐷ぶた 🐔にわとり 🐑ひつじ 🐴うま 🐐やぎ 🦆あひる'],
+      ['どうぶつえん', '🦁', '#E8590C', '🦁ライオン 🐘ぞう 🦒きりん 🐼パンダ 🐯とら 🦓しまうま 🦍ゴリラ 🐨コアラ 🦛かば 🐻‍❄️しろくま']
+    ]),
+    T('legs', 'iki', 'あしは なんぼん？', '🦵', [
+      ['2ほん', '🐔', '#1C7ED6', '🐔にわとり 🐧ペンギン 🦆あひる 🦉ふくろう 🦩フラミンゴ 🦅わし 🐦ことり 🦜インコ', 'あしが 2ほん'],
+      ['4ほん', '🐶', '#E8590C', '🐶いぬ 🐱ねこ 🐘ぞう 🐮うし 🦒きりん 🐷ぶた 🐴うま 🐰うさぎ', 'あしが 4ほん']
+    ]),
+    T('living', 'iki', 'いきもの？ ものかな？', '🐣', [
+      ['いきもの', '🐣', '#2F9E44', '🐶いぬ 🐱ねこ 🐟さかな 🐦ことり 🦋ちょうちょ 🐸かえる 🐘ぞう 🐞てんとうむし'],
+      ['もの', '📦', '#868E96', '🚗くるま ✏️えんぴつ 🪑いす 📱スマホ ⚽ボール 🧸ぬいぐるみ 🎒ランドセル ⏰とけい']
+    ]),
+    T('bigsmallani', 'iki', 'おおきい どうぶつ・ちいさい どうぶつ', '🦒', [
+      ['おおきい', '🐘', '#E8590C', '🐘ぞう 🦒きりん 🐳くじら 🦏さい 🦛かば 🐻くま 🐴うま 🦍ゴリラ'],
+      ['ちいさい', '🐭', '#1C7ED6', '🐭ねずみ 🐜あり 🐞てんとうむし 🐹ハムスター 🐝はち 🐤ひよこ 🐌かたつむり 🐿️りす']
+    ]),
+    // ---- のりもの・もの ----
+    T('vehanimal', 'nori', 'のりもの と どうぶつ', '🚗', [
+      ['のりもの', '🚗', '#1C7ED6', '🚗くるま 🚌バス 🚃でんしゃ 🚲じてんしゃ ✈️ひこうき 🚢ふね 🚒しょうぼうしゃ 🚑きゅうきゅうしゃ 🚕タクシー 🚜トラクター'],
+      ['どうぶつ', '🐶', '#E8590C', '🐶いぬ 🐱ねこ 🐘ぞう 🦁ライオン 🐰うさぎ 🐻くま 🐮うし 🐵さる 🐼パンダ 🦒きりん']
+    ]),
+    T('vehicle3', 'nori', 'のりもの（りく・そら・うみ）', '🚀', [
+      ['りく', '🛣️', '#8D5524', '🚗くるま 🚌バス 🚃でんしゃ 🚲じてんしゃ 🚒しょうぼうしゃ 🚑きゅうきゅうしゃ 🚜トラクター 🏍️バイク 🚂きしゃ'],
+      ['そら', '☁️', '#5C7CFA', '✈️ひこうき 🚁ヘリコプター 🚀ロケット 🛸ユーフォー 🪂パラシュート 🛩️こがたき'],
+      ['うみ', '🌊', '#1C7ED6', '🚢ふね ⛵ヨット 🚤ボート 🛶カヌー 🛥️クルーザー ⛴️フェリー']
+    ]),
+    T('workcar', 'nori', 'はたらく くるま・みんなで のる', '🚒', [
+      ['はたらく くるま', '🚒', '#E03131', '🚒しょうぼうしゃ 🚑きゅうきゅうしゃ 🚓パトカー 🚜トラクター 🚚トラック 🏗️クレーン 🚛トレーラー'],
+      ['みんなで のる', '🚌', '#1C7ED6', '🚌バス 🚃でんしゃ 🚕タクシー 🚂きしゃ ✈️ひこうき 🚢ふね 🚝モノレール 🚅しんかんせん']
+    ]),
+    T('wheels', 'nori', 'タイヤは いくつ？', '🛞', [
+      ['2つ', '🚲', '#2F9E44', '🚲じてんしゃ 🛵スクーター 🏍️バイク 🛴キックボード', 'タイヤ 2つ'],
+      ['4つ', '🚗', '#1C7ED6', '🚗くるま 🚕タクシー 🚌バス 🚓パトカー 🚑きゅうきゅうしゃ 🚙ジープ 🚒しょうぼうしゃ', 'タイヤ 4つ']
+    ]),
+    T('clothes', 'nori', 'きるもの・はくもの・かぶるもの', '👕', [
+      ['きるもの', '👕', '#1C7ED6', '👕シャツ 👖ズボン 👗ワンピース 🧥コート 👚ブラウス 🩳はんズボン 🥼はくい 👘きもの'],
+      ['はくもの', '👟', '#E8590C', '👟くつ 👞かわぐつ 🧦くつした 👢ながぐつ 🩴ビーチサンダル 👡サンダル'],
+      ['かぶるもの', '🧢', '#2F9E44', '🧢ぼうし 👒むぎわらぼうし 🎩シルクハット ⛑️ヘルメット 🎓がくしぼう 👑おうかん'],
+      ['つけるもの', '🧤', '#7048E8', '🧤てぶくろ 🧣マフラー 👓めがね ⌚うでどけい 🎀リボン 💍ゆびわ']
+    ]),
+    T('where', 'nori', 'どこで つかう？', '🏠', [
+      ['だいどころ', '🍳', '#E8590C', '🍳フライパン 🥄スプーン 🍴フォーク 🔪ほうちょう 🥢はし 🍽️おさら 🫖きゅうす 🥣おわん'],
+      ['おふろ・せんめんじょ', '🛁', '#1C7ED6', '🧼せっけん 🪥はブラシ 🧴シャンプー 🛁おふろ 🚿シャワー 🧽スポンジ 🧻ペーパー'],
+      ['がっこう', '🏫', '#2F9E44', '✏️えんぴつ 📏じょうぎ 📓ノート 🎒ランドセル 🖍️クレヨン ✂️はさみ 📚きょうかしょ 🧮そろばん']
+    ]),
+    T('musicsport', 'nori', 'がっき・スポーツ・ぶんぼうぐ', '🎵', [
+      ['がっき', '🎵', '#7048E8', '🎹ピアノ 🥁たいこ 🎸ギター 🎺トランペット 🎻バイオリン 🎷サックス 🔔すず'],
+      ['スポーツ', '⚽', '#2F9E44', '⚽サッカー 🏀バスケットボール ⚾やきゅう 🎾テニス 🏐バレーボール 🏓たっきゅう 🏸バドミントン'],
+      ['ぶんぼうぐ', '✏️', '#E8590C', '✏️えんぴつ 🖍️クレヨン 📏じょうぎ ✂️はさみ 📓ノート 🖊️ペン 📎クリップ 📐さんかくじょうぎ']
+    ]),
+    T('play', 'nori', 'そとあそび・へやあそび', '🛝', [
+      ['そと', '🌳', '#2F9E44', '⚽サッカー 🛝すべりだい 🪁たこあげ 🚲じてんしゃ 🏀バスケットボール 🤸てつぼう 🏃かけっこ'],
+      ['へや', '🏠', '#E8590C', '🧩パズル 🧸ぬいぐるみ 🎲すごろく 📚えほん 🖍️おえかき 🧱ブロック 🃏トランプ 🎮ゲーム']
+    ]),
+    T('electric', 'nori', 'でんきを つかう？', '💡', [
+      ['つかう', '🔌', '#FAB005', '📺テレビ 💡でんき 📱スマホ 🔦かいちゅうでんとう 💻パソコン 🎮ゲーム 📻ラジオ', 'でんきを つかう'],
+      ['つかわない', '🍃', '#2F9E44', '✏️えんぴつ 📚ほん 🧸ぬいぐるみ 🪑いす 🧦くつした 🧺かご 🥄スプーン ☂️かさ', 'でんきを つかわない']
+    ]),
+    T('hardsoft', 'nori', 'かたい・やわらかい', '🪨', [
+      ['かたい', '🪨', '#868E96', '🪨いし 🔨かなづち 🧱れんが 🔑かぎ 🥄スプーン 🪑いす ⚾ボール 🥥ココナッツ'],
+      ['やわらかい', '🧸', '#F06595', '🧸ぬいぐるみ 🍮プリン 🧽スポンジ 🍞パン 🎈ふうせん 🧶けいと 🍡だんご 🛏️ふとん']
+    ]),
+    // ---- くらし・きせつ ----
+    T('season', 'kura', 'きせつ（はる・なつ・あき・ふゆ）', '🌸', [
+      ['はる', '🌸', '#F06595', '🌸さくら 🌷チューリップ 🎎ひなにんぎょう 🐝はち 🦋ちょうちょ 🍓いちご 🎒にゅうがく'],
+      ['なつ', '🌻', '#FAB005', '🍉すいか 🌻ひまわり 🎆はなび 🍧かきごおり 🎐ふうりん 🏖️うみ 🩱みずぎ 🎋たなばた'],
+      ['あき', '🍁', '#E8590C', '🍁もみじ 🍂おちば 🌰くり 🍠やきいも 🎃ハロウィン 🍇ぶどう 🎑おつきみ 🍄きのこ'],
+      ['ふゆ', '⛄', '#1C7ED6', '⛄ゆきだるま ❄️ゆき 🎄クリスマス 🎍かどまつ 🧤てぶくろ 🧣マフラー 🎅サンタ 🍊みかん']
+    ]),
+    T('weather', 'kura', 'てんき と もちもの', '⛅', [
+      ['はれ', '☀️', '#FAB005', '☀️たいよう 🕶️サングラス 🧢ぼうし 🌻ひまわり 👒むぎわらぼうし'],
+      ['あめ', '☔', '#1C7ED6', '☔かさ 🌧️あめ 🐌かたつむり 🐸かえる 👢ながぐつ 🌈にじ'],
+      ['ゆき', '⛄', '#4DABF7', '⛄ゆきだるま ❄️ゆき 🧤てぶくろ 🛷そり ⛷️スキー 🧣マフラー']
+    ]),
+    T('hotday', 'kura', 'あつい ひ・さむい ひ', '🌡️', [
+      ['あつい ひ', '🥵', '#E03131', '🍉すいか 🍧かきごおり 🩱みずぎ 🎐ふうりん 🌻ひまわり 🏖️うみ 🍦ソフトクリーム 🩳はんズボン'],
+      ['さむい ひ', '🥶', '#1C7ED6', '⛄ゆきだるま 🧤てぶくろ 🧣マフラー 🧥コート 🍲なべ ⛷️スキー 🛷そり 🍠やきいも']
+    ]),
+    T('day', 'kura', 'あさ・ひる・よる', '🌞', [
+      ['あさ', '🌅', '#FAB005', '🌅あさひ ⏰めざまし 🪥はみがき 🍞あさごはん 🐓にわとり 📰しんぶん'],
+      ['ひる', '☀️', '#E8590C', '☀️たいよう 🏫がっこう 🍱おべんとう ⚽そとあそび 🌻ひまわり'],
+      ['よる', '🌙', '#5F3DC4', '🌙つき ⭐ほし 🛁おふろ 🛏️ベッド 🦉ふくろう 🌃よるの_まち']
+    ]),
+    T('jobs', 'kura', 'しごと と どうぐ', '🧑‍🚒', [
+      ['しょうぼうし', '🧑‍🚒', '#E03131', '🚒しょうぼうしゃ 🧯しょうかき 🪜はしご 🔥ひ ⛑️ヘルメット'],
+      ['おいしゃさん', '🧑‍⚕️', '#1C7ED6', '🩺ちょうしんき 💊くすり 💉ちゅうしゃ 🩹ばんそうこう 🚑きゅうきゅうしゃ 🌡️たいおんけい'],
+      ['コックさん', '🧑‍🍳', '#E8590C', '🍳フライパン 🔪ほうちょう 🥄スプーン 🍲なべ 🧂しお 🍽️おさら'],
+      ['のうかさん', '🧑‍🌾', '#2F9E44', '🚜トラクター 🌾いね 🥕にんじん 🌱め 🧺かご 🍅トマト']
+    ]),
+    T('feelings', 'kura', 'きもちの かお', '😊', [
+      ['うれしい', '😊', '#FAB005', '😀にこにこ 😄わらう 😊うれしい 🥰だいすき 😆おおわらい 😍すてき'],
+      ['かなしい', '😢', '#1C7ED6', '😢なみだ 😭なく 😞がっかり 😔しょんぼり 🥺うるうる'],
+      ['おこっている', '😠', '#E03131', '😠ぷんぷん 😡かんかん 😤ふんっ 👿いらいら'],
+      ['びっくり', '😲', '#7048E8', '😲びっくり 😮おどろく 😱こわい 🙀ぎょっ']
+    ]),
+    T('summerwinter', 'kura', 'なつの ふく・ふゆの ふく', '👕', [
+      ['なつ', '☀️', '#E8590C', '🩳はんズボン 👕Tシャツ 🩱みずぎ 👒むぎわらぼうし 🩴ビーチサンダル 🕶️サングラス'],
+      ['ふゆ', '❄️', '#1C7ED6', '🧥コート 🧣マフラー 🧤てぶくろ 👢ブーツ 🧦くつした 🎿スキー']
+    ]),
+    // ---- ことば・かず ----
+    T('aiueo', 'koto', 'はじめの おと（あ・い・う・え・お）', 'あ', [
+      ['あ', 'あ', '#E03131', '🐜あり 🍬あめ 🦆あひる 🦶あし 👣あしあと 🧠あたま'],
+      ['い', 'い', '#E8590C', '🐶いぬ 🍓いちご 🪑いす 🐬いるか 🦑いか 🐗いのしし 🪨いし'],
+      ['う', 'う', '#FAB005', '🐰うさぎ 🐮うし 🐴うま 🌊うみ 💪うで'],
+      ['え', 'え', '#2F9E44', '✏️えんぴつ 🦐えび 📕えほん 🚉えき 🖼️え'],
+      ['お', 'お', '#1C7ED6', '🍙おにぎり 👻おばけ 🏯おしろ 🪓おの 🛁おふろ 🧓おじいさん']
+    ]),
+    T('kakiku', 'koto', 'はじめの おと（か・き・く・け・こ）', 'か', [
+      ['か', 'か', '#E03131', '🐢かめ ☂️かさ 🦀かに 🔑かぎ 🐸かえる 🍛カレー 📷カメラ'],
+      ['き', 'き', '#E8590C', '🦒きりん 🍄きのこ 🦊きつね 🌳き 🚂きしゃ 🥝キウイ'],
+      ['く', 'く', '#FAB005', '🐻くま 👟くつ 🚗くるま 🌰くり 🐳くじら 🍪クッキー 🧦くつした'],
+      ['け', 'け', '#2F9E44', '🐛けむし 🍰ケーキ 📱けいたい 🎮ゲーム'],
+      ['こ', 'こ', '#1C7ED6', '🐨コアラ 🥛コップ 🧥コート ☕コーヒー 🎏こいのぼり']
+    ]),
+    T('moji', 'koto', 'もじの しゅるい', '🔤', [
+      ['ひらがな', 'あ', '#E03131', 'あ い う え お か き く け こ さ し す せ そ た な は ま や'],
+      ['カタカナ', 'ア', '#1C7ED6', 'ア イ ウ エ オ カ キ ク ケ コ サ シ ス セ ソ タ ナ ハ マ ヤ'],
+      ['すうじ', '1', '#2F9E44', '1 2 3 4 5 6 7 8 9 0'],
+      ['アルファベット', 'A', '#7048E8', 'A B C D E F G H K M P S T']
+    ]),
+    G_('same', 'koto', 'おなじ え', '👀', 'same'),
+    G_('word', 'koto', 'ことば と え', '🔤', 'word', { icon: 'いぬ' }),
+    G_('count', 'koto', 'かず（いくつ？）', '🔢', 'count')
+  ];
+  // うえの ? つきの しなものは のぞく（いらすとが ない もの）
+  THEMES.forEach(t => { if (t.bins) t.bins.forEach(b => { b.items = b.items.filter(x => !/\?$/.test(x.n) && !/\?$/.test(x.e)); }); });
+  // 「word」の アイコンは もじ
+  const GEN_INFO = {
+    color: { max: 4, def: 3 }, shape: { max: 4, def: 3 }, size: { max: 2, def: 2 }, count: { max: 4, def: 3 }, same: { max: 4, def: 3 }, word: { max: 4, def: 3 }
+  };
+
+  /* ============================================================
+     保存
+     ============================================================ */
+  const LS = 'nakamawake.v1';
+  function load(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+  const DEF = {
+    mode: 'sort',        // sort：なかまわけ ／ collect：あつめよう ／ odd：なかまはずれ
+    deal: 'all',         // all：ぜんぶ ならべる ／ one：1まいずつ
+    bins: 'auto', cards: 8, rounds: 1, oddN: 5, oddQ: 5,
+    label: 'both',       // both：え と ことば ／ word：ことばだけ ／ pic：えだけ
+    names: true, big: false,
+    hint: 'after2',      // none ／ after2 ／ after1 ／ always
+    tap: true, voice: true, voiceItem: true, sound: true, volume: 0.8, rate: 0.95, calm: false,
+    group: 'all'
+  };
+  const saved = load(LS) || {};
+  const st = Object.assign({}, DEF, saved.settings || {});
+  const custom = Array.isArray(saved.custom) ? saved.custom : [];
+  const log = Array.isArray(saved.log) ? saved.log : [];
+  let saveT = null;
+  function persist() { clearTimeout(saveT); if (!save(LS, { settings: st, custom: custom, log: log.slice(-500) })) toast('保存できませんでした（写真が おおすぎるかも しれません）'); }
+  function persistSoon() { clearTimeout(saveT); saveT = setTimeout(persist, 400); }
+
+  /* ============================================================
+     音・こえ
+     ============================================================ */
+  let ac = null;
+  function audio() { if (!st.sound) return null; try { if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); return ac; } catch (e) { return null; } }
+  function tone(f, s, d, type, v) { const a = audio(); if (!a) return; const t = a.currentTime + s, o = a.createOscillator(), g = a.createGain(); o.type = type || 'sine'; o.frequency.setValueAtTime(f, t); g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime((v || .25) * st.volume, t + .01); g.gain.exponentialRampToValueAtTime(.0001, t + d); o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + d + .05); }
+  const sfx = {
+    tap() { tone(740, 0, .07, 'triangle', .15); },
+    pick() { tone(520, 0, .06, 'sine', .2); tone(780, .04, .07, 'sine', .14); },
+    ok(i) { const f = [523, 587, 659, 698, 784, 880, 988, 1047][Math.min(i || 0, 7)]; tone(f, 0, .18, 'triangle', .28); tone(f * 1.5, .06, .22, 'sine', .14); },
+    ng() { tone(330, 0, .16, 'triangle', .18); tone(262, .12, .22, 'triangle', .16); },
+    round() { [659, 784, 988, 1319].forEach((f, i) => tone(f, i * .09, .26, 'triangle', .22)); },
+    fanfare() { [[523, 0], [659, .12], [784, .24], [1047, .4], [784, .6], [1047, .74]].forEach(n => { tone(n[0], n[1], .32, 'square', .07); tone(n[0], n[1], .38, 'triangle', .22); }); }
+  };
+  const canSpeak = 'speechSynthesis' in window;
+  let jaVoice = null;
+  function loadVoice() { if (!canSpeak) return; const v = speechSynthesis.getVoices().filter(x => /^ja/i.test(x.lang)); jaVoice = v.find(x => /Kyoko|O-ren|Otoya|Hattori/i.test(x.name)) || v[0] || null; }
+  function speak(t) { if (!canSpeak || !st.voice || !t) return; try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'ja-JP'; u.rate = st.rate; u.pitch = 1.1; if (jaVoice) u.voice = jaVoice; speechSynthesis.speak(u); } catch (e) { /* 無視 */ } }
+
+  let toastT = null;
+  function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600); }
+  let lockUntil = 0;
+  function tapOk(ms) { const n = Date.now(); if (n < lockUntil) return false; lockUntil = n + (ms || 500); return true; }
+
+  /* ============================================================
+     おいわいの 演出（クラッカー・はなび・かみふぶき）  FX
+     FX.small(el)  … 1つ できたとき（ボタンから はじける）
+     FX.big()      … ぜんぶ できたとき（クラッカー → はなび → かみふぶき）
+     ============================================================ */
+  const FX = (function () {
+    let cv = null, cx = null, parts = [], raf = 0, last = 0;
+    const COLS = ['#FF6B6B', '#FFA94D', '#FFD43B', '#69DB7C', '#4DABF7', '#9775FA', '#F783AC', '#38D9A9', '#FFFFFF'];
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    const calm = () => document.body.classList.contains('calm') || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+    function ensure() {
+      if (cv) return;
+      cv = document.createElement('canvas');
+      cv.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:44';
+      document.body.appendChild(cv);
+      cx = cv.getContext('2d');
+      const fit = () => { const d = Math.min(window.devicePixelRatio || 1, 2); cv.width = innerWidth * d; cv.height = innerHeight * d; cx.setTransform(d, 0, 0, d, 0, 0); };
+      fit(); window.addEventListener('resize', fit);
+    }
+    function loop(t) {
+      const dt = Math.min(40, t - (last || t)); last = t;
+      cx.clearRect(0, 0, innerWidth, innerHeight);
+      for (let i = parts.length - 1; i >= 0; i--) {
+        const p = parts[i];
+        p.age += dt;
+        if (p.age >= p.life || p.y > innerHeight + 60) { if (p.onEnd) p.onEnd(p); parts.splice(i, 1); continue; }
+        p.vy += (p.g || 0) * dt; p.vx *= p.drag || 1; p.vy *= p.drag || 1;
+        p.x += p.vx * dt; p.y += p.vy * dt; p.rot += (p.vr || 0) * dt;
+        const a = p.fade ? Math.max(0, 1 - p.age / p.life) : 1;
+        cx.globalAlpha = a;
+        if (p.k === 'paper') {   // ひらひら まう かみ
+          const w = Math.cos(p.age / 120 + p.ph);
+          cx.save(); cx.translate(p.x + Math.sin(p.age / 300 + p.ph) * 6, p.y); cx.rotate(p.rot); cx.scale(1, w);
+          cx.fillStyle = p.c; cx.fillRect(-p.s / 2, -p.s / 3, p.s, p.s * 0.66); cx.restore();
+        } else if (p.k === 'ribbon') {  // くるくる リボン
+          cx.strokeStyle = p.c; cx.lineWidth = 3; cx.beginPath();
+          for (let j = 0; j < 6; j++) { const yy = p.y - j * 5, xx = p.x + Math.sin(p.age / 90 + j * .9 + p.ph) * 6; j ? cx.lineTo(xx, yy) : cx.moveTo(xx, yy); }
+          cx.stroke();
+        } else if (p.k === 'spark') {   // はなびの ひかり
+          cx.fillStyle = p.c; cx.beginPath(); cx.arc(p.x, p.y, p.s * (1 - p.age / p.life * .6), 0, 7); cx.fill();
+        } else if (p.k === 'rocket') {
+          cx.fillStyle = '#FFF3BF'; cx.beginPath(); cx.arc(p.x, p.y, 4, 0, 7); cx.fill();
+          cx.globalAlpha = .5; cx.fillStyle = '#FFD43B'; cx.beginPath(); cx.arc(p.x, p.y + 10, 3, 0, 7); cx.fill();
+        } else if (p.k === 'emoji') {
+          cx.save(); cx.translate(p.x, p.y); cx.rotate(p.rot); cx.font = p.s + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+          cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(p.t, 0, 0); cx.restore();
+        } else if (p.k === 'ring') {
+          cx.strokeStyle = p.c; cx.lineWidth = 6 * (1 - p.age / p.life); cx.beginPath(); cx.arc(p.x, p.y, p.s + p.age * 0.35, 0, 7); cx.stroke();
+        }
+      }
+      cx.globalAlpha = 1;
+      raf = parts.length ? requestAnimationFrame(loop) : 0;
+      if (!raf) cx.clearRect(0, 0, innerWidth, innerHeight);
+    }
+    function go() { if (!raf) { last = 0; raf = requestAnimationFrame(loop); } }
+    const P = o => { parts.push(Object.assign({ age: 0, rot: 0, ph: Math.random() * 6 }, o)); };
+    function burst(x, y, n, speed, kinds) {
+      for (let i = 0; i < n; i++) {
+        const a = Math.random() * Math.PI * 2, v = rnd(speed * .4, speed);
+        const k = kinds[i % kinds.length];
+        if (k === 'paper') P({ k: 'paper', x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - .2, g: .0009, drag: .985, vr: rnd(-.01, .01), s: rnd(8, 14), c: COLS[i % COLS.length], life: 2600 });
+        else P({ k: 'spark', x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: .0003, drag: .975, s: rnd(2.5, 4.5), c: COLS[i % 8], life: 900, fade: true });
+      }
+      go();
+    }
+    /* ---- 音 ---- */
+    let ac = null;
+    function A() { try { if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); return ac; } catch (e) { return null; } }
+    function noise(dur, vol, f0, f1, delay) {
+      const a = A(); if (!a || !FX.sound()) return;
+      const n = Math.floor(a.sampleRate * dur), b = a.createBuffer(1, n, a.sampleRate), d = b.getChannelData(0);
+      for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 2.5);
+      const s = a.createBufferSource(), fl = a.createBiquadFilter(), g = a.createGain(), t = a.currentTime + (delay || 0);
+      s.buffer = b; fl.type = 'bandpass'; fl.Q.value = 0.8; fl.frequency.setValueAtTime(f0, t); if (f1) fl.frequency.exponentialRampToValueAtTime(f1, t + dur);
+      g.gain.value = vol * FX.volume(); s.connect(fl); fl.connect(g); g.connect(a.destination); s.start(t);
+    }
+    function popSound(delay) { noise(0.25, 1.4, 2200, 500, delay); }
+    function boomSound(delay) { noise(0.9, 0.9, 700, 90, delay); }
+    function whistle(delay) {
+      const a = A(); if (!a || !FX.sound()) return;
+      const o = a.createOscillator(), g = a.createGain(), t = a.currentTime + delay;
+      o.type = 'sine'; o.frequency.setValueAtTime(600, t); o.frequency.exponentialRampToValueAtTime(1800, t + .6);
+      g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(.06 * FX.volume(), t + .05); g.gain.exponentialRampToValueAtTime(.0001, t + .65);
+      o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + .7);
+    }
+    function clap(delay, dur) { for (let i = 0; i < dur * 14; i++) noise(0.06, rnd(.3, .7), rnd(900, 2200), 0, delay + i / 14 + rnd(0, .05)); }
+
+    // クラッカー（がめんの したの すみから）
+    function cracker(side, delay) {
+      setTimeout(() => {
+        const x = side < 0 ? 40 : innerWidth - 40, y = innerHeight - 40, dir = side < 0 ? 1 : -1;
+        P({ k: 'emoji', t: '🎉', x: x, y: y, s: 90, rot: side < 0 ? 0 : -1.4, life: 1100, fade: true });
+        for (let i = 0; i < 90; i++) {
+          const a = -Math.PI / 2 + dir * rnd(.15, .85), v = rnd(.7, 1.45);
+          P({ k: i % 5 ? 'paper' : 'ribbon', x: x, y: y - 30, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: .0011, drag: .986, vr: rnd(-.012, .012), s: rnd(9, 15), c: COLS[i % COLS.length], life: 3600 });
+        }
+        popSound(0); go();
+      }, delay);
+    }
+    function firework(x, y, delay) {
+      setTimeout(() => {
+        P({ k: 'rocket', x: x, y: innerHeight, vx: 0, vy: -(innerHeight - y) / 600, life: 600, onEnd: p => { burst(p.x, p.y, 70, .45, ['spark', 'spark', 'spark', 'paper']); P({ k: 'ring', x: p.x, y: p.y, s: 10, c: '#FFE066', life: 500, fade: true }); boomSound(0); } });
+        whistle(0); go();
+      }, delay);
+    }
+    return {
+      sound: () => true, volume: () => 1,
+      small(el, opt) {
+        if (calm() || !el) return;
+        ensure();
+        const r = el.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+        const v = (opt && opt.variant) != null ? opt.variant : Math.floor(Math.random() * 5);
+        if (v === 0) burst(x, y, 40, .6, ['paper']);
+        else if (v === 1) { for (let i = 0; i < 10; i++) { const a = i / 10 * 6.28; P({ k: 'emoji', t: '⭐', x: x, y: y, vx: Math.cos(a) * .35, vy: Math.sin(a) * .35, g: .0004, s: 34, vr: .01, life: 900, fade: true }); } go(); }
+        else if (v === 2) { for (let i = 0; i < 8; i++) P({ k: 'emoji', t: pick2(['💖', '💗', '💕']), x: x + rnd(-40, 40), y: y, vx: rnd(-.08, .08), vy: rnd(-.45, -.25), s: rnd(28, 44), life: 1300, fade: true }); go(); }
+        else if (v === 3) { P({ k: 'ring', x: x, y: y, s: r.width * .3, c: '#FFD43B', life: 600, fade: true }); P({ k: 'ring', x: x, y: y, s: r.width * .2, c: '#69DB7C', life: 700, fade: true }); burst(x, y, 30, .5, ['spark']); }
+        else { for (let i = 0; i < 12; i++) P({ k: 'emoji', t: pick2(['✨', '🌟', '🎵', '🍀']), x: x, y: y, vx: rnd(-.5, .5), vy: rnd(-.7, -.3), g: .0012, s: rnd(26, 40), vr: rnd(-.01, .01), life: 1200, fade: true }); go(); }
+      },
+      big() {
+        if (calm()) return;
+        ensure();
+        cracker(-1, 0); cracker(1, 180);
+        const W = innerWidth, H = innerHeight;
+        firework(W * .25, H * .25, 700); firework(W * .72, H * .2, 1100); firework(W * .5, H * .32, 1500); firework(W * .35, H * .18, 1900);
+        setTimeout(() => { for (let i = 0; i < 120; i++) P({ k: i % 6 ? 'paper' : 'ribbon', x: rnd(0, W), y: rnd(-H * .6, -10), vx: rnd(-.05, .05), vy: rnd(.08, .22), g: .00004, vr: rnd(-.01, .01), s: rnd(9, 15), c: COLS[i % COLS.length], life: 6000 }); go(); }, 1200);
+        clap(0.4, 2.2);
+      }
+    };
+    function pick2(a) { return a[Math.floor(Math.random() * a.length)]; }
+  })();
+
+  // ほめことば（いろいろ）
+  const PRAISE_MORE = ['すごい！', 'やったね！', 'かっこいい！', 'いいね！', 'その ちょうし！', 'えらい！', 'じょうず！', 'ばっちり！', 'ナイス！', 'さすが！',
+    'できたね！', 'すてき！', 'てんさい！', 'グッド！', 'パーフェクト！', 'きまった！', 'いい かんじ！', 'がんばったね！', 'さいこう！', 'ピカピカ！',
+    'すばらしい！', 'まえより じょうず！', 'おみごと！', 'どんどん いこう！', 'かがやいてる！'];
+  const PRAISE_COLORS = ['#F76707', '#E64980', '#1C7ED6', '#2F9E44', '#7048E8', '#F59F00', '#0CA678'];
+
+  FX.sound = () => st.sound; FX.volume = () => Number(st.volume) || 0.8;
+  let lastPraise = '';
+  function praiseWord() { let w; do { w = pick(PRAISE_MORE); } while (w === lastPraise && PRAISE_MORE.length > 1); lastPraise = w; return w; }
+  function showPraise(t) { if (st.calm) return; const p = h('div', { class: 'praise', style: 'color:' + pick(PRAISE_COLORS) }, t); document.body.appendChild(p); setTimeout(() => p.remove(), 1450); }
+  function popAt(el, t) {
+    if (!el || st.calm) return;
+    const r = el.getBoundingClientRect();
+    const p = h('div', { class: 'popw', style: 'left:' + (r.left + r.width / 2) + 'px;top:' + (r.top + r.height * .35) + 'px;color:' + pick(PRAISE_COLORS) }, t);
+    document.body.appendChild(p); setTimeout(() => p.remove(), 1150);
+  }
+
+  /* ============================================================
+     カードの え
+     ============================================================ */
+  function visHTML(it) {
+    switch (it.kind) {
+      case 'photo': return '<img src="' + esc(it.img) + '" alt="">';
+      case 'shape': return shapeSVG(it.shape, it.color, it.color === '#FFFFFF' ? '#868E96' : '#343A40', 3);
+      case 'count': return '<span class="cnt c' + it.cnt + '">' + Array(it.cnt).fill('<i>' + it.e + '</i>').join('') + '</span>';
+      case 'text': return esc(it.e);
+      default: return it.e;
+    }
+  }
+  const visClass = it => 'k-' + it.kind + (it.kind === 'size' ? (it.big ? ' big' : ' small') : '');
+  function iconHTML(ic) {
+    if (!ic) return '';
+    switch (ic.t) {
+      case 'emoji': return '<span class="bic">' + ic.v + '</span>';
+      case 'kana': return '<span class="bic kana">' + esc(ic.v) + '</span>';
+      case 'num': return '<span class="bic num">' + esc(ic.v) + '</span>';
+      case 'swatch': return swatchSVG(ic.v);
+      case 'shape': return shapeSVG(ic.v, '#fff', '#212529', 8);
+      case 'size': return sizeSVG(ic.v === 'big');
+      case 'dots': return dotsSVG(+ic.v);
+      case 'photo': return '<img src="' + esc(ic.v) + '" alt="">';
+      default: return '';
+    }
+  }
+  function iconFrom(s) { if (!s) return null; return isText(s) ? { t: 'kana', v: s } : { t: 'emoji', v: s }; }
+
+  /* ============================================================
+     はこ（なかま）を つくる
+     はこ = { label, sub, icon, c, say, max, gen(k) → しなもの[] }
+     ============================================================ */
+  function pickIdx(n, k) { return shuffle(Array.from({ length: n }, (_, i) => i)).slice(0, k).sort((a, b) => a - b); }
+  function itemOf(x) { return { kind: x.img ? 'photo' : (isText(x.e) ? 'text' : 'emoji'), e: x.e, n: x.n || '', img: x.img || '' }; }
+  const GEN = {
+    color(N, th) {
+      const pool = COLORS.slice(0, th.pool || 4);
+      return pickIdx(pool.length, N).map(i => {
+        const c = pool[i];
+        return { label: c.n, icon: { t: 'swatch', v: c.c }, c: c.b || c.c, say: c.n, max: 99,
+          gen: k => Array.from({ length: k }, () => ({ kind: 'shape', shape: pick(SHAPES.slice(0, 5)).id, color: c.c, n: '' })) };
+      });
+    },
+    shape(N) {
+      const pool = SHAPES.slice(0, 5);
+      return pickIdx(pool.length, N).map((i, j) => {
+        const s = pool[i];
+        return { label: s.n, icon: { t: 'shape', v: s.id }, c: BIN_COLORS[j], say: s.n, max: 99,
+          gen: k => Array.from({ length: k }, () => ({ kind: 'shape', shape: s.id, color: pick(COLORS.slice(0, 8)).c, n: '' })) };
+      });
+    },
+    size() {
+      const E = shuffle(SIZEPOOL);
+      return [
+        { label: 'おおきい', icon: { t: 'size', v: 'big' }, c: '#E8590C', say: 'おおきい', max: E.length, gen: k => E.slice(0, k).map(x => ({ kind: 'size', e: x.e, n: x.n, big: true })) },
+        { label: 'ちいさい', icon: { t: 'size', v: 'small' }, c: '#1C7ED6', say: 'ちいさい', max: E.length, gen: k => E.slice(0, k).map(x => ({ kind: 'size', e: x.e, n: x.n, big: false })) }
+      ];
+    },
+    count(N) {
+      const start = rint(1, 6 - N);
+      return Array.from({ length: N }, (_, j) => {
+        const n = start + j;
+        return { label: n + 'こ', icon: { t: 'dots', v: String(n) }, c: BIN_COLORS[j], say: n + 'こ', max: 99,
+          gen: k => Array.from({ length: k }, () => ({ kind: 'count', e: pick(COUNTPOOL), cnt: n, n: '' })) };
+      });
+    },
+    same(N) {
+      return shuffle(SAMEPOOL).slice(0, N).map((x, j) => ({ label: x.n, icon: { t: 'emoji', v: x.e }, c: BIN_COLORS[j], say: x.n, max: 99,
+        gen: k => Array.from({ length: k }, () => ({ kind: 'emoji', e: x.e, n: x.n })) }));
+    },
+    word(N) {
+      return shuffle(SAMEPOOL).slice(0, N).map((x, j) => ({ label: x.n, icon: null, wordOnly: true, c: BIN_COLORS[j], say: x.n, max: 99,
+        gen: k => Array.from({ length: k }, () => ({ kind: 'emoji', e: x.e, n: '', say: x.n })) }));
+    }
+  };
+  function listBins(th, N) {
+    const usable = th.bins.filter(b => b.items && b.items.length);
+    return pickIdx(usable.length, Math.min(N, usable.length)).map(i => {
+      const b = usable[i];
+      let icon = iconFrom(b.i);
+      if (th.colorBins && colorOf(b.n)) icon = { t: 'swatch', v: colorOf(b.n).c };
+      if (th.shapeBins) { const s = SHAPES.find(x => x.n === b.n); if (s) icon = { t: 'shape', v: s.id }; }
+      return { label: b.n, sub: b.sub, icon: icon, c: b.c || BIN_COLORS[i % 8], say: b.n, max: b.items.length,
+        gen: k => shuffle(b.items).slice(0, k).map(itemOf) };
+    });
+  }
+  function maxBins(th) { return th.gen ? GEN_INFO[th.gen].max : Math.min(4, th.bins.filter(b => b.items && b.items.length).length); }
+  function defBins(th) { return th.gen ? GEN_INFO[th.gen].def : Math.min(th.defN || 4, maxBins(th)); }
+  function binCount(th, want) { const w = want === undefined ? st.bins : want; return Math.max(2, Math.min(w === 'auto' ? defBins(th) : +w, maxBins(th))); }
+  function makeBins(th, N) { return th.gen ? GEN[th.gen](N, th) : listBins(th, N); }
+  // ぜんぶで total まいを はこに わける（はこの しなものの かずを こえない）
+  function spread(bins, total) {
+    const cnt = bins.map(() => 0); let left = total, guard = 0;
+    while (left > 0 && guard++ < 500) { let moved = false; for (let i = 0; i < bins.length && left > 0; i++) { if (cnt[i] < bins[i].max) { cnt[i]++; left--; moved = true; } } if (!moved) break; }
+    return cnt;
+  }
+
+  /* ============================================================
+     テーマの いちらん
+     ============================================================ */
+  function allThemes() {
+    const mine = custom.map(c => ({ id: c.id, g: 'custom', name: c.name || 'じぶんの なかまわけ', icon: c.icon || '📦', custom: true,
+      bins: (c.bins || []).map(b => ({ n: b.n || 'なかま', i: b.i || '', c: b.c, items: (b.items || []).filter(x => x.e || x.img), sub: '' })) }))
+      .filter(t => t.bins.filter(b => b.items.length).length >= 2);
+    return THEMES.concat(mine);
+  }
+  const themeById = id => allThemes().find(t => t.id === id);
+  function previewIcons(th) {
+    let list;
+    if (th.gen === 'color') list = COLORS.slice(0, 4).map(c => ({ h: swatchSVG(c.c), c: c.b || c.c }));
+    else if (th.gen === 'shape') list = SHAPES.slice(0, 4).map((s, j) => ({ h: shapeSVG(s.id, '#fff', '#212529', 8), c: BIN_COLORS[j] }));
+    else if (th.gen === 'size') list = [{ h: sizeSVG(true), c: '#E8590C' }, { h: sizeSVG(false), c: '#1C7ED6' }];
+    else if (th.gen === 'count') list = [1, 2, 3].map((n, j) => ({ h: dotsSVG(n), c: BIN_COLORS[j] }));
+    else if (th.gen === 'same') list = SAMEPOOL.slice(0, 3).map((x, j) => ({ h: x.e, c: BIN_COLORS[j] }));
+    else if (th.gen === 'word') list = ['いぬ', 'ねこ', 'くつ'].map((x, j) => ({ t: x.slice(0, 1), c: BIN_COLORS[j] }));
+    else list = th.bins.slice(0, 4).map(b => {
+      if (th.colorBins && colorOf(b.n)) return { h: swatchSVG(colorOf(b.n).c), c: b.c };
+      if (th.shapeBins) { const s = SHAPES.find(x => x.n === b.n); if (s) return { h: shapeSVG(s.id, '#fff', '#212529', 8), c: b.c }; }
+      if (!b.i) return { t: (b.n || '？').slice(0, 1), c: b.c };
+      return isText(b.i) ? { t: b.i, c: b.c } : { h: b.i, c: b.c };
+    });
+    return list.map(x => x.t ? h('span', { class: 't', style: '--c:' + x.c }, x.t) : h('span', { style: '--c:' + x.c, html: x.h }));
+  }
+
+  /* ============================================================
+     画面
+     ============================================================ */
+  let screen = 'home', G = null;
+  function setView(cls, kids) {
+    const v = $('#view'); v.innerHTML = ''; v.appendChild(h('section', { class: 'screen ' + cls }, kids));
+    $('#homeBtn').hidden = screen === 'home' || screen === 'play';
+    $('#printBtn').hidden = screen === 'play';
+  }
+  const MODES = [
+    { id: 'sort', e: '🧺', n: 'なかまわけ', d: 'なかまの はこに わけよう' },
+    { id: 'collect', e: '🎯', n: 'あつめよう', d: 'おなじ なかまだけ あつめる' },
+    { id: 'odd', e: '🙅', n: 'なかまはずれ', d: 'ひとつだけ ちがうのは どれ？' }
+  ];
+
+  /* ---- ホーム：テーマを えらぶ ---- */
+  function renderHome() {
+    screen = 'home'; G = null;
+    const list = allThemes().filter(t => st.group === 'all' || t.g === st.group);
+    const cards = [];
+    if (st.group !== 'custom') cards.push(h('button', { type: 'button', class: 'tcard rand', onclick: () => { if (!tapOk(600)) return; sfx.tap(); startGame(pick(list.length ? list : THEMES)); } },
+      h('span', { class: 'ti emo' }, '🎲'), h('span', { class: 'tn' }, 'おまかせ'), h('span', { class: 'tb' }, h('span', { class: 't', style: '--c:#F08C00' }, '？'))));
+    list.forEach(t => cards.push(h('button', { type: 'button', class: 'tcard' + (t.custom ? ' mine' : ''), onclick: () => { if (!tapOk(600)) return; sfx.tap(); startGame(t); } },
+      h('span', { class: 'ti' + (isText(t.icon) ? ' txt' : ' emo') }, t.icon), h('span', { class: 'tn' }, t.name), h('span', { class: 'tb' }, previewIcons(t)))));
+    if (st.group === 'custom' && !list.length) cards.push(h('div', { class: 'empty-note' }, 'まだ ありません。', h('br'), '先生：右上の ⚙️ を 1.5秒 ながおし →「じぶんで つくる」で、', h('br'), '学校の 実物の 写真や ことばで なかまわけを つくれます。'));
+    setView('home', [
+      h('div', { class: 'modes' }, MODES.map(m => h('button', { type: 'button', class: 'mode' + (st.mode === m.id ? ' on' : ''), onclick: () => { st.mode = m.id; persist(); sfx.tap(); speak(m.n); renderHome(); } },
+        h('span', { class: 'emo' }, m.e), h('span', { class: 'tx' }, m.n, h('small', null, m.d))))),
+      h('div', { class: 'groups' }, GROUPS.map(g => h('button', { type: 'button', class: st.group === g.id ? 'on' : '', onclick: () => { st.group = g.id; persist(); sfx.tap(); renderHome(); } },
+        h('span', { class: 'emo' }, g.e), ' ' + g.n))),
+      h('div', { class: 'themes' }, cards)
+    ]);
+  }
+
+  /* ---- あそびの じゅんび ---- */
+  function startGame(th) {
+    G = { theme: th, mode: st.mode, roundNo: 0, rounds: st.mode === 'odd' ? +st.oddQ : +st.rounds, miss: 0, placed: 0, t0: Date.now(), sel: null };
+    G.r = buildRound(th, G.mode);
+    renderPlay();
+  }
+  let seq = 0;
+  function finalize(items) { return shuffle(items).map(it => Object.assign(it, { id: 'i' + (seq++), rot: rint(-4, 4), miss: 0, done: false, hint: false })); }
+  function buildRound(th, mode) {
+    const total = Math.max(2, +st.cards);
+    if (mode === 'collect') {
+      const bins = makeBins(th, Math.min(3, maxBins(th)));
+      const target = bins[0];
+      const tCount = Math.min(Math.max(1, Math.ceil(total / 2)), target.max);
+      const others = bins.slice(1), oc = spread(others, total - tCount);
+      let items = target.gen(tCount).map(it => Object.assign(it, { b: 0 }));
+      others.forEach((b, i) => { items = items.concat(b.gen(oc[i]).map(it => Object.assign(it, { b: i + 1 }))); });
+      return { mode, all: bins, bins: [target], items: finalize(items), need: tCount,
+        ask: target.label + 'を あつめよう', sub: 'おなじ なかまだけ はこに いれてね', say: target.say + 'を あつめよう。' + target.say + 'だけ はこに いれてね' };
+    }
+    if (mode === 'odd') {
+      const bins = makeBins(th, 2), A = bins[0], B = bins[1];
+      const n = Math.max(3, Math.min(+st.oddN, A.max + 1));
+      const items = A.gen(n - 1).map(it => Object.assign(it, { b: 0 })).concat(B.gen(1).map(it => Object.assign(it, { b: 1, odd: true })));
+      return { mode, all: bins, A, B, bins: [{ label: 'なかまはずれ', icon: { t: 'emoji', v: '🙅' }, c: '#E8590C', say: 'なかまはずれ' }], items: finalize(items), need: 1,
+        ask: 'なかまはずれは どれ？', sub: 'ひとつだけ ちがうのを はこに いれよう', say: 'なかまはずれは どれかな？ ひとつだけ ちがうのを はこに いれよう' };
+    }
+    const bins = makeBins(th, binCount(th));
+    const cnt = spread(bins, total);
+    let items = [];
+    bins.forEach((b, i) => { items = items.concat(b.gen(cnt[i]).map(it => Object.assign(it, { b: i }))); });
+    return { mode: 'sort', all: bins, bins, items: finalize(items), need: items.length,
+      ask: 'なかまの はこに いれよう', sub: th.name, say: 'なかまの はこに わけよう。' + bins.map(b => b.say).join('、') };
+  }
+  const corrIdx = it => G.r.mode === 'sort' ? it.b : G.r.mode === 'collect' ? (it.b === 0 ? 0 : -1) : (it.odd ? 0 : -1);
+
+  /* ---- あそぶ ---- */
+  function renderPlay() {
+    screen = 'play';
+    const R = G.r;
+    const dots = G.rounds > 1 ? h('div', { class: 'dots' }, Array.from({ length: G.rounds }, (_, i) => h('i', { class: i < G.roundNo ? 'on' : i === G.roundNo ? 'now' : '' }))) : null;
+    setView('play', [
+      h('div', { class: 'ptop' }, quitBtn(), dots,
+        h('div', { class: 'ask', id: 'ask' }, R.ask, R.sub ? h('small', null, R.sub) : null),
+        h('button', { type: 'button', class: 'round-btn', 'aria-label': 'もういちど きく', onclick: () => speak(R.say) }, '🔊')),
+      h('div', { class: 'table' + (st.deal === 'one' ? ' single' : ''), id: 'table' }),
+      h('div', { class: 'bins' + (R.bins.length === 1 ? ' one' : ''), id: 'bins' }, R.bins.map(binEl))
+    ]);
+    drawTable();
+    const tb = $('#table');
+    tb.addEventListener('pointerdown', onDown);
+    $('#bins').addEventListener('click', onBinTap);
+    speak(R.say);
+  }
+  function binEl(b, i) {
+    const pic = st.label !== 'word' && !b.wordOnly && b.icon;
+    // しるしが そのまま もじ（「あ」の はこ など）の ときは 2かい かかない
+    const same = pic && (b.icon.t === 'kana' || b.icon.t === 'num') && b.icon.v === b.label;
+    const word = (st.label !== 'pic' || b.wordOnly || !b.icon) && !same;
+    return h('div', { class: 'bin' + (pic ? '' : ' wordonly'), 'data-b': i, style: '--c:' + b.c },
+      h('div', { class: 'blabel' }, pic ? h('span', { html: iconHTML(b.icon), style: 'display:contents' }) : null,
+        word ? h('span', null, b.label, b.sub && st.label === 'both' ? h('small', null, b.sub) : null) : null),
+      h('div', { class: 'bbody' }), h('span', { class: 'bcount' }, '0'));
+  }
+  function cardEl(it) {
+    const named = st.names && it.n && (it.kind === 'emoji' || it.kind === 'photo');
+    return h('div', { class: 'card' + (it.done ? ' gone' : '') + (named ? ' named' : ''), 'data-id': it.id, style: '--rot:' + it.rot + 'deg' },
+      h('div', { class: 'v ' + visClass(it), html: visHTML(it) }), named ? h('div', { class: 'nm' }, it.n) : null);
+  }
+  function drawTable() {
+    const tb = $('#table'); if (!tb) return;
+    tb.innerHTML = '';
+    const R = G.r;
+    if (st.deal === 'one') {
+      const left = R.items.filter(it => !it.done && !(R.mode !== 'sort' && it.fadeOut));
+      const cur = R.mode === 'sort' ? left[0] : null;
+      if (cur) tb.appendChild(cardEl(cur));
+      else R.items.forEach(it => tb.appendChild(cardEl(it)));   // あつめよう・なかまはずれは ぜんぶ ならべる
+      if (cur) tb.appendChild(h('div', { class: 'left-n' }, 'のこり ' + left.length + 'まい'));
+    } else R.items.forEach(it => tb.appendChild(cardEl(it)));
+    layoutCards();
+  }
+  function layoutCards() {
+    const tb = $('#table'); if (!tb) return;
+    const n = tb.querySelectorAll('.card').length; if (!n) return;
+    const W = tb.clientWidth - 10, H = tb.clientHeight - 10, gap = n > 12 ? 10 : 14;
+    let best = 0, bc = 1;
+    for (let rows = 1; rows <= n; rows++) { const cols = Math.ceil(n / rows); const s = Math.min((W - gap * (cols - 1)) / cols, (H - gap * (rows - 1)) / rows); if (s > best) { best = s; bc = cols; } }
+    const single = n === 1 && st.deal === 'one';
+    const max = single ? 300 : (st.big ? 240 : 190);
+    const s = Math.max(60, Math.min(max, Math.floor(best)));
+    tb.style.setProperty('--cs', s + 'px'); tb.style.gap = gap + 'px';
+    tb.style.gridTemplateColumns = 'repeat(' + bc + ', ' + s + 'px)';
+  }
+  window.addEventListener('resize', () => { if (screen === 'play') layoutCards(); });
+
+  /* ---- ゆびで うごかす ---- */
+  let drag = null;
+  const itemById = id => G && G.r.items.find(x => x.id === id);
+  const binEls = () => $$('#bins .bin');
+  function binAt(x, y) { return binEls().find(b => { const r = b.getBoundingClientRect(); return x >= r.left - 18 && x <= r.right + 18 && y >= r.top - 18 && y <= r.bottom + 18; }) || null; }
+  function onDown(e) {
+    const card = e.target.closest('.card');
+    if (!card || card.classList.contains('gone') || card.classList.contains('fade') || drag || !G || G.busy) return;
+    e.preventDefault();
+    const it = itemById(card.dataset.id); if (!it || it.done) return;
+    drag = { card, it, x0: e.clientX, y0: e.clientY, id: e.pointerId, moved: false, clone: null, over: null };
+    window.addEventListener('pointermove', onMove, { passive: false });
+    window.addEventListener('pointerup', onUp); window.addEventListener('pointercancel', onUp);
+  }
+  function makeClone(card) {
+    const r = card.getBoundingClientRect(), c = card.cloneNode(true);
+    c.classList.remove('sel', 'shake'); c.classList.add('float');
+    const cs = getComputedStyle($('#table')).getPropertyValue('--cs');
+    c.style.setProperty('--cs', cs); c.style.left = r.left + 'px'; c.style.top = r.top + 'px'; c.style.width = r.width + 'px'; c.style.height = r.height + 'px';
+    c.style.transform = 'none';
+    document.body.appendChild(c);
+    return { c, r };
+  }
+  function startDrag() {
+    const m = makeClone(drag.card); drag.clone = m.c; drag.r = m.r;
+    drag.card.classList.add('lifted'); clearSel();
+    sfx.pick();
+    if (st.voiceItem && (drag.it.n || drag.it.say) && G.theme.gen !== 'word') speak(drag.it.n || '');
+    showHint(drag.it, true);
+  }
+  function onMove(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    e.preventDefault();
+    const x = e.clientX, y = e.clientY;
+    if (!drag.moved) { if (Math.hypot(x - drag.x0, y - drag.y0) < 8) return; drag.moved = true; startDrag(); }
+    drag.clone.style.transform = 'translate(' + (x - drag.x0) + 'px,' + (y - drag.y0) + 'px) scale(1.1) rotate(' + Math.max(-8, Math.min(8, (x - drag.x0) / 30)) + 'deg)';
+    const b = binAt(x, y);
+    if (b !== drag.over) { if (drag.over) drag.over.classList.remove('over'); drag.over = b; if (b) b.classList.add('over'); }
+  }
+  function onUp(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    window.removeEventListener('pointermove', onMove); window.removeEventListener('pointerup', onUp); window.removeEventListener('pointercancel', onUp);
+    const d = drag; drag = null;
+    if (!d.moved) { if (e.type === 'pointerup') tapCard(d.card, d.it); return; }
+    if (d.over) d.over.classList.remove('over');
+    showHint(d.it, false);
+    const b = e.type === 'pointerup' ? binAt(e.clientX, e.clientY) : null;
+    if (b) dropTo(d, +b.dataset.b); else goBack(d, false);
+  }
+  // タップで えらんで → はこを タップ
+  function clearSel() { if (!G) return; G.sel = null; $$('.card.sel').forEach(c => c.classList.remove('sel')); const bs = $('#bins'); if (bs) bs.classList.remove('choosing'); }
+  function tapCard(card, it) {
+    if (!st.tap) { speak(it.n || it.say || ''); return; }
+    if (G.sel === it.id) { clearSel(); return; }
+    clearSel(); G.sel = it.id; card.classList.add('sel'); $('#bins').classList.add('choosing');
+    sfx.pick(); if (st.voiceItem && it.n && G.theme.gen !== 'word') speak(it.n);
+    showHint(it, true); setTimeout(() => showHint(it, false), 1600);
+  }
+  function onBinTap(e) {
+    const b = e.target.closest('.bin'); if (!b || !G || G.busy) return;
+    const bi = +b.dataset.b;
+    if (!G.sel) { speak(G.r.bins[bi].say); return; }
+    const it = itemById(G.sel), card = $('.card[data-id="' + G.sel + '"]');
+    clearSel();
+    if (!it || !card || it.done) return;
+    const m = makeClone(card); card.classList.add('lifted');
+    dropTo({ card, it, clone: m.c, r: m.r, x0: 0, y0: 0 }, bi);
+  }
+  function showHint(it, on) {
+    const ci = corrIdx(it); if (ci < 0) return;
+    const el = binEls()[ci]; if (!el) return;
+    if (on && (st.hint === 'always' || it.hint)) el.classList.add('hint'); else if (!on) el.classList.remove('hint');
+  }
+  function flashHint(it) { const ci = corrIdx(it); const el = binEls()[ci]; if (!el) return; el.classList.add('hint'); setTimeout(() => el.classList.remove('hint'), 2200); }
+
+  function dropTo(d, bi) {
+    const R = G.r, it = d.it, ok = corrIdx(it) === bi;
+    const binE = binEls()[bi];
+    if (!ok) {
+      it.miss++; G.miss++;
+      sfx.ng(); binE.classList.remove('ng'); void binE.offsetWidth; binE.classList.add('ng');
+      const nm = it.n || (it.kind === 'text' ? it.e : 'それ');
+      let msg;
+      if (R.mode === 'sort') msg = nm + 'は ' + R.bins[bi].say + 'じゃ ないよ。どの はこかな？';
+      else if (R.mode === 'collect') msg = nm + 'は ' + R.bins[0].say + 'じゃ ないね。のこして おこう';
+      else msg = nm + 'は ほかと おなじ ' + R.A.say + 'の なかまだよ';
+      speak(msg);
+      if (st.hint === 'after1' && it.miss >= 1 || st.hint === 'after2' && it.miss >= 2 || st.hint === 'always') { it.hint = true; flashHint(it); }
+      goBack(d, true);
+      return;
+    }
+    it.done = true; G.placed++;
+    const body = binE.querySelector('.bbody'), tr = body.getBoundingClientRect();
+    const tx = tr.left + tr.width / 2 - (d.r.left + d.r.width / 2), ty = tr.top + tr.height / 2 - (d.r.top + d.r.height / 2);
+    d.clone.style.transition = 'transform .32s cubic-bezier(.4,0,.6,1), opacity .32s';
+    requestAnimationFrame(() => { d.clone.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(.3)'; d.clone.style.opacity = '.4'; });
+    const placedHere = R.items.filter(x => x.done && corrIdx(x) === bi).length;
+    sfx.ok(placedHere - 1);
+    setTimeout(() => {
+      d.clone.remove(); d.card.classList.remove('lifted'); d.card.classList.add('gone');
+      body.appendChild(h('span', { class: 'mini ' + visClass(it), html: visHTML(it) }));
+      binE.querySelector('.bcount').textContent = placedHere;
+      binE.classList.remove('ok'); void binE.offsetWidth; binE.classList.add('ok');
+      if (!st.calm) FX.small(binE, { variant: rint(0, 4) });
+      const nm = it.n || (it.kind === 'text' ? it.e : '') || it.say || '';
+      if (R.mode === 'odd') { popAt(binE, praiseWord()); speak((nm ? nm + 'は ' : '') + R.B.say + '。ほかは みんな ' + R.A.say + '！'); }
+      else { popAt(binE, praiseWord()); speak(R.mode === 'sort' ? (nm ? nm + 'は ' : '') + R.bins[bi].say + '！' : (nm || R.bins[0].say) + '、いいね！'); }
+      const doneN = R.items.filter(x => x.done).length;
+      if (doneN >= R.need) roundDone();
+      else if (st.deal === 'one' && R.mode === 'sort') drawTable();
+    }, 330);
+  }
+  function goBack(d, wrong) {
+    const c = d.clone;
+    c.style.transition = 'transform .28s cubic-bezier(.3,1.4,.5,1)';
+    requestAnimationFrame(() => { c.style.transform = 'none'; });
+    setTimeout(() => {
+      c.remove(); d.card.classList.remove('lifted');
+      if (wrong) { d.card.classList.remove('shake'); void d.card.offsetWidth; d.card.classList.add('shake'); }
+    }, 290);
+  }
+  function roundDone() {
+    G.busy = true;
+    const R = G.r;
+    if (R.mode !== 'sort') R.items.forEach(it => { if (!it.done) { const c = $('.card[data-id="' + it.id + '"]'); if (c) c.classList.add('fade'); } });
+    setTimeout(() => {
+      sfx.round(); showPraise(praiseWord());
+      if (!st.calm) binEls().forEach((b, i) => setTimeout(() => FX.small(b, { variant: i % 5 }), i * 120));
+      const last = G.roundNo + 1 >= G.rounds;
+      speak(R.mode === 'odd' ? (last ? 'できたね！' : 'せいかい！ つぎの もんだい') : (last ? 'ぜんぶ できたね！' : 'できた！ つぎも やってみよう'));
+      setTimeout(() => {
+        if (screen !== 'play' || !G) return;
+        G.roundNo++;
+        if (G.roundNo >= G.rounds) renderResult(false);
+        else { G.busy = false; G.r = buildRound(G.theme, G.mode); renderPlay(); }
+      }, R.mode === 'odd' ? 2300 : 2000);
+    }, 420);
+  }
+  window.addEventListener('blur', () => { if (drag) { const d = drag; drag = null; if (d.clone) goBack(d, false); } });
+
+  // とちゅうで おわる（1.5秒 ながおし）
+  function quitBtn() {
+    const b = h('button', { type: 'button', class: 'quit', 'aria-label': 'とちゅうで おわる（ながおし）' }, h('i'), h('span', null, '✕ おわる（ながおし）'));
+    let t = null;
+    const cancel = () => { clearTimeout(t); t = null; b.classList.remove('pressing'); };
+    b.addEventListener('pointerdown', e => { e.preventDefault(); b.classList.add('pressing'); t = setTimeout(() => { cancel(); renderResult(true); }, 1500); });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, cancel));
+    b.addEventListener('contextmenu', e => e.preventDefault());
+    return b;
+  }
+
+  /* ---- けっか ---- */
+  function renderResult(stopped) {
+    if (!G) return renderHome();
+    screen = 'result';
+    const sec = Math.round((Date.now() - G.t0) / 1000), th = G.theme, mode = G.mode;
+    $$('.float').forEach(x => x.remove()); drag = null;
+    if (G.placed > 0) {
+      const d = new Date();
+      log.push({ d: d.toISOString().slice(0, 10), at: d.toTimeString().slice(0, 5), theme: th.name, mode: (MODES.find(m => m.id === mode) || {}).n, n: G.placed, miss: G.miss, sec: sec, rounds: G.roundNo + (stopped ? 0 : 0), stop: stopped ? 1 : 0 });
+      persist();
+    }
+    const again = () => { if (tapOk(600)) { sfx.tap(); startGame(th); } };
+    if (stopped) {
+      setView('result', [
+        h('div', { class: 'dance emo', style: 'animation:none' }, '🧺'),
+        h('h1', { style: 'color:var(--blue-d)' }, 'きょうは ここまで'),
+        h('div', { style: 'font-size:24px' }, G.placed ? G.placed + 'まい できたね。また やろうね！' : 'また こんど やろうね！'),
+        h('div', { class: 'actions' }, h('button', { type: 'button', class: 'big-btn go', onclick: () => { if (tapOk(600)) { sfx.tap(); renderHome(); } } }, '🧺 テーマを えらぶ'))
+      ]);
+      speak(G.placed ? 'きょうは ここまで。' + G.placed + 'まい できたね' : 'きょうは ここまで');
+      G = null; return;
+    }
+    const stars = G.miss === 0 ? 3 : G.miss <= 2 ? 2 : 1;
+    setView('result', [
+      h('div', { class: 'dance emo' }, pick(['🐶', '🐱', '🐰', '🐻', '🐼', '🐧', '🦁', '🐸'])),
+      h('h1', { class: 'rainbow-text' }, stars === 3 ? 'パーフェクト！' : 'ぜんぶ できた！'),
+      h('div', { class: 'stars emo' }, [0, 1, 2].map(i => h('span', { class: i < stars ? '' : 'off' }, '⭐'))),
+      h('div', { class: 'rstat' }, h('div', null, h('small', null, 'できた かず'), G.placed + 'まい'), h('div', null, h('small', null, 'まちがい'), G.miss + 'かい'),
+        h('div', null, h('small', null, 'じかん'), (sec >= 60 ? Math.floor(sec / 60) + 'ふん ' : '') + (sec % 60) + 'びょう')),
+      h('div', { class: 'actions' },
+        h('button', { type: 'button', class: 'big-btn blue', onclick: again }, '🔁 もういちど'),
+        h('button', { type: 'button', class: 'big-btn go', onclick: () => { if (tapOk(600)) { sfx.tap(); renderHome(); } } }, '🧺 ほかの テーマ'))
+    ]);
+    sfx.fanfare(); FX.big();
+    speak(stars === 3 ? 'パーフェクト！ まちがい なし！ すごい！' : 'ぜんぶ できたね！ がんばったね！');
+    lockUntil = Date.now() + 1200;
+  }
+
+  /* ============================================================
+     A4 プリント
+     ============================================================ */
+  const PR_TYPES = [
+    { id: 'line', n: '🖊️ せんで むすぼう', d: 'しなものと はこを せんで むすぶ' },
+    { id: 'cut', n: '✂️ きって はろう', d: 'カードを きって、なかまの はこに はる（2まい）' },
+    { id: 'circle', n: '⭕ ○を つけよう', d: 'おなじ なかまに ○を つける' },
+    { id: 'odd', n: '❌ なかまはずれ', d: 'ひとつだけ ちがうものに ×' }
+  ];
+  const pr = { theme: 'fruitveg', type: 'line', cards: 6, bins: 'auto', words: true, answer: true, pages: 1, rows: 5, html: [] };
+  const MM = 96 / 25.4;
+  function pvHTML(it, s, showName) {
+    let fs = s * .82;
+    if (it.kind === 'count') fs = s * .2; else if (it.kind === 'size') fs = it.big ? s * .9 : s * .36; else if (it.kind === 'text') fs = s * .75;
+    const nm = showName && it.n && it.kind !== 'text' && it.kind !== 'count' ? '<div class="pn">' + esc(it.n) + '</div>' : '';
+    return '<div class="pcell"><div class="pv ' + visClass(it) + '" style="width:' + s + 'mm;height:' + s + 'mm;font-size:' + fs.toFixed(1) + 'mm">' + visHTML(it) + '</div>' + nm + '</div>';
+  }
+  function pBinHead(b) {
+    const pic = b.icon && !b.wordOnly ? iconHTML(b.icon) : '';
+    const same = pic && (b.icon.t === 'kana' || b.icon.t === 'num') && b.icon.v === b.label;
+    return '<div class="pbinh">' + pic + (same ? '' : '<span>' + esc(b.label) + '</span>') + '</div>';
+  }
+  function pPage(title, inst, body, isAns) {
+    return '<div class="ppage"><div class="phead"><div class="ptitle">' + esc(title) + (isAns ? '<span class="pans">こたえ</span>' : '') + '</div><div class="pname">なまえ<span></span></div></div>' +
+      '<div class="pinst">' + inst + '</div><div class="pbody">' + body + '</div><div class="pfoot">MieeL なかまわけ ／ mieel-support-school.com</div></div>';
+  }
+  const BW = 186, BH = 240; // .pbody の おおきさ（mm）
+  const prCardOpts = type => type === 'line' ? [[4, '4'], [6, '6'], [8, '8']] : type === 'cut' ? [[6, '6'], [8, '8'], [12, '12'], [16, '16']] : [[8, '8'], [12, '12'], [16, '16']];
+  function buildPrint() {
+    const th = themeById(pr.theme) || THEMES[0];
+    const co = prCardOpts(pr.type);
+    if (pr.type !== 'odd' && !co.some(o => String(o[0]) === String(pr.cards))) pr.cards = co[pr.type === 'circle' ? 1 : Math.min(1, co.length - 1)][0];
+    const pages = [], answers = [];
+    for (let p = 0; p < pr.pages; p++) {
+      if (pr.type === 'line' || pr.type === 'cut') {
+        const N = binCount(th, pr.bins), bins = makeBins(th, N);
+        const k = Math.min(pr.type === 'line' ? Math.min(+pr.cards, 8) : +pr.cards, bins.reduce((a, b) => a + Math.min(b.max, 99), 0));
+        const cnt = spread(bins, k); let items = [];
+        bins.forEach((b, i) => { items = items.concat(b.gen(cnt[i]).map(it => Object.assign(it, { b: i }))); });
+        items = shuffle(items);
+        if (pr.type === 'line') { const r = pLine(th, bins, items); pages.push(r.q); answers.push(r.a); }
+        else { const r = pCut(th, bins, items); pages.push(r.mat, r.cards); answers.push(r.a); }
+      } else if (pr.type === 'circle') {
+        const bins = makeBins(th, Math.min(3, maxBins(th))), target = bins[0];
+        const total = +pr.cards, tc = Math.min(Math.ceil(total / 2), target.max), oc = spread(bins.slice(1), total - tc);
+        let items = target.gen(tc).map(it => Object.assign(it, { b: 0 }));
+        bins.slice(1).forEach((b, i) => { items = items.concat(b.gen(oc[i]).map(it => Object.assign(it, { b: i + 1 }))); });
+        const r = pCircle(th, target, shuffle(items)); pages.push(r.q); answers.push(r.a);
+      } else {
+        const rows = [];
+        for (let i = 0; i < +pr.rows; i++) {
+          const bins = makeBins(th, 2), A = bins[0], B = bins[1], n = Math.min(4, A.max + 1);
+          rows.push({ A, B, items: shuffle(A.gen(n - 1).concat(B.gen(1).map(it => Object.assign(it, { odd: true })))) });
+        }
+        const r = pOdd(th, rows); pages.push(r.q); answers.push(r.a);
+      }
+    }
+    pr.html = pr.answer ? pages.concat(answers) : pages;
+  }
+  function pLine(th, bins, items) {
+    const k = items.length, N = bins.length, top = 2;
+    const rowH = (BH - top) / k, ih = Math.min(30, rowH - 3), s = Math.max(10, ih - (pr.words ? 6 : 2));
+    const binH = Math.min(58, (BH - top) / N - 6);
+    let body = '', ans = '';
+    const yI = i => top + rowH * (i + .5), yB = j => top + (BH - top) / N * (j + .5);
+    items.forEach((it, i) => {
+      body += '<div class="pabs pbox" style="left:4mm;top:' + (yI(i) - ih / 2).toFixed(1) + 'mm;width:58mm;height:' + ih.toFixed(1) + 'mm;display:flex;align-items:center;justify-content:center">' + pvHTML(it, s, pr.words) + '</div>';
+      body += '<div class="pabs pdot" style="left:68mm;top:' + (yI(i) - 1.7).toFixed(1) + 'mm"></div>';
+    });
+    bins.forEach((b, j) => {
+      body += '<div class="pabs pbox" style="left:116mm;top:' + (yB(j) - binH / 2).toFixed(1) + 'mm;width:68mm;height:' + binH.toFixed(1) + 'mm;display:flex;flex-direction:column;justify-content:center;border-color:' + b.c + ';border-width:1mm">' + pBinHead(b).replace('pbinh', 'pbinh" style="border:none') + '</div>';
+      body += '<div class="pabs pdot" style="left:108mm;top:' + (yB(j) - 1.7).toFixed(1) + 'mm"></div>';
+    });
+    items.forEach((it, i) => { ans += '<line x1="69.7" y1="' + yI(i).toFixed(1) + '" x2="109.7" y2="' + yB(it.b).toFixed(1) + '" stroke="#E03131" stroke-width=".9" stroke-linecap="round"/>'; });
+    const q = pPage(th.name, 'なかまの はこと せんで むすぼう', body);
+    const a = pPage(th.name, 'なかまの はこと せんで むすぼう', body + '<svg class="pmark" viewBox="0 0 ' + BW + ' ' + BH + '" style="width:' + BW + 'mm;height:' + BH + 'mm">' + ans + '</svg>', true);
+    return { q, a };
+  }
+  function pMat(bins, fill) {
+    const N = bins.length, gap = 4, w = (BW - gap * (N - 1)) / N;
+    return bins.map((b, j) => {
+      let inner = '';
+      if (fill) inner = '<div style="display:flex;flex-wrap:wrap;gap:2mm;justify-content:center;padding:3mm">' + fill.filter(it => it.b === j).map(it => '<div class="pbox" style="padding:1mm">' + pvHTML(it, Math.min(22, w / 2.6), false) + '</div>').join('') + '</div>';
+      else inner = '<div style="color:#AAA;font-size:4.5mm;text-align:center;margin-top:30mm">ここに はろう</div>';
+      return '<div class="pabs pbox" style="left:' + (j * (w + gap)).toFixed(1) + 'mm;top:0;width:' + w.toFixed(1) + 'mm;height:' + BH + 'mm;border-color:' + b.c + ';border-width:1.2mm">' + pBinHead(b) + inner + '</div>';
+    }).join('');
+  }
+  function pCut(th, bins, items) {
+    const mat = pPage(th.name, 'カードを きって、なかまの はこに はろう', pMat(bins, null));
+    const cols = 4, cw = 44, chH = 44, gx = (BW - cols * cw) / (cols - 1);
+    let body = '';
+    items.forEach((it, i) => {
+      const c = i % cols, r = Math.floor(i / cols);
+      body += '<div class="pabs pcut" style="left:' + (c * (cw + gx)).toFixed(1) + 'mm;top:' + (r * (chH + 4)).toFixed(1) + 'mm;width:' + cw + 'mm;height:' + chH + 'mm;display:flex;align-items:center;justify-content:center">' + pvHTML(it, pr.words ? 30 : 34, pr.words) + '</div>';
+    });
+    body += '<div class="pabs" style="left:0;bottom:2mm;font-size:4mm;color:#666">✂ てんせんで きりとろう</div>';
+    const cards = pPage(th.name + '（カード）', 'てんせんで きって つかおう', body);
+    const a = pPage(th.name, 'カードを きって、なかまの はこに はろう', pMat(bins, items), true);
+    return { mat, cards, a };
+  }
+  function pCircle(th, target, items) {
+    const cols = 4, rows = Math.ceil(items.length / cols), cw = 42, ch = Math.min(52, (BH - 14) / rows - 4), gx = (BW - cols * cw) / (cols - 1);
+    let body = '<div class="pabs pbox" style="left:0;top:0;width:' + BW + 'mm;height:12mm;display:flex;align-items:center;justify-content:center;gap:3mm;font-size:6mm;border-color:' + target.c + '">' + (target.icon && !target.wordOnly ? iconHTML(target.icon).replace('class="shp"', 'class="shp" style="width:9mm;height:9mm"').replace('class="bic', 'style="font-size:8mm" class="bic') : '') + esc(target.label) + 'に ○を つけよう</div>';
+    let ans = '';
+    items.forEach((it, i) => {
+      const c = i % cols, r = Math.floor(i / cols), x = c * (cw + gx), y = 16 + r * (ch + 4);
+      body += '<div class="pabs pbox" style="left:' + x.toFixed(1) + 'mm;top:' + y.toFixed(1) + 'mm;width:' + cw + 'mm;height:' + ch.toFixed(1) + 'mm;display:flex;align-items:center;justify-content:center;border-color:#BBB">' + pvHTML(it, Math.min(30, ch - (pr.words ? 9 : 5)), pr.words) + '</div>';
+      if (it.b === 0) ans += '<ellipse cx="' + (x + cw / 2).toFixed(1) + '" cy="' + (y + ch / 2).toFixed(1) + '" rx="' + (cw / 2 + 1).toFixed(1) + '" ry="' + (ch / 2 + 1).toFixed(1) + '" fill="none" stroke="#E03131" stroke-width="1.1"/>';
+    });
+    const inst = esc(target.label) + 'の なかまを みつけて ○を つけよう';
+    return { q: pPage(th.name, inst, body), a: pPage(th.name, inst, body + '<svg class="pmark" viewBox="0 0 ' + BW + ' ' + BH + '" style="width:' + BW + 'mm;height:' + BH + 'mm">' + ans + '</svg>', true) };
+  }
+  function pOdd(th, rows) {
+    const R = rows.length, rh = BH / R - 4;
+    let body = '', ans = '';
+    rows.forEach((row, r) => {
+      const y = r * (rh + 4), n = row.items.length, cw = Math.min(40, (BW - 14 - (n - 1) * 4) / n);
+      body += '<div class="pabs" style="left:0;top:' + (y + rh / 2 - 4).toFixed(1) + 'mm;font-size:6mm">' + (r + 1) + '</div>';
+      row.items.forEach((it, i) => {
+        const x = 12 + i * (cw + 4);
+        body += '<div class="pabs pbox" style="left:' + x.toFixed(1) + 'mm;top:' + y.toFixed(1) + 'mm;width:' + cw.toFixed(1) + 'mm;height:' + rh.toFixed(1) + 'mm;display:flex;align-items:center;justify-content:center;border-color:#BBB">' + pvHTML(it, Math.min(30, cw - 6, rh - (pr.words ? 9 : 4)), pr.words) + '</div>';
+        if (it.odd) ans += '<path d="M' + (x + 4) + ' ' + (y + 4) + ' L' + (x + cw - 4) + ' ' + (y + rh - 4) + ' M' + (x + cw - 4) + ' ' + (y + 4) + ' L' + (x + 4) + ' ' + (y + rh - 4) + '" stroke="#E03131" stroke-width="1.4" stroke-linecap="round"/>';
+      });
+    });
+    const inst = 'なかまはずれ（ひとつだけ ちがうもの）に × を つけよう';
+    return { q: pPage(th.name, inst, body), a: pPage(th.name, inst, body + '<svg class="pmark" viewBox="0 0 ' + BW + ' ' + BH + '" style="width:' + BW + 'mm;height:' + BH + 'mm">' + ans + '</svg>', true) };
+  }
+  function openPrint() { if (canSpeak) speechSynthesis.cancel(); if (!themeById(pr.theme)) pr.theme = THEMES[0].id; $('#printModal').classList.add('open'); buildPrint(); renderPrint(); $('#printModal').scrollTop = 0; }
+  function closePrint() { $('#printModal').classList.remove('open'); }
+  function renderPrint() {
+    const P = $('#printPanel'); P.innerHTML = '';
+    const re = () => { buildPrint(); renderPrint(); };
+    const seg = (label, key, opts) => [h('div', { class: 'seglabel' }, label), h('div', { class: 'seg' }, opts.map(o => h('button', { type: 'button', class: String(pr[key]) === String(o[0]) ? 'on' : '', onclick: () => { pr[key] = o[0]; re(); } }, o[1])))];
+    const groups = GROUPS.filter(g => g.id !== 'all');
+    const sel = h('select', { onchange: e => { pr.theme = e.target.value; re(); } },
+      groups.map(g => { const ts = allThemes().filter(t => t.g === g.id); return ts.length ? h('optgroup', { label: g.n }, ts.map(t => h('option', { value: t.id, selected: t.id === pr.theme }, t.name))) : null; }));
+    const typ = PR_TYPES.find(t => t.id === pr.type);
+    const cardOpts = prCardOpts(pr.type);
+    const prev = h('div', { class: 'prprev', id: 'prPrev' });
+    P.append(
+      h('div', { class: 'panel-head' }, h('h2', null, '🖨️ A4 プリント'), h('button', { type: 'button', class: 'btn ok', onclick: closePrint }, 'とじる')),
+      h('div', { class: 'prgrid' },
+        h('div', { class: 'prctl' },
+          h('div', { class: 'seglabel' }, 'テーマ'), sel,
+          seg('プリントの しゅるい', 'type', PR_TYPES.map(t => [t.id, t.n])), h('p', { class: 'note' }, typ ? typ.d : ''),
+          pr.type === 'line' || pr.type === 'cut' ? seg('はこの かず', 'bins', [['auto', 'おまかせ'], [2, '2'], [3, '3'], [4, '4']]) : null,
+          pr.type === 'odd' ? seg('もんだいの かず', 'rows', [[4, '4'], [5, '5'], [6, '6']]) : seg('カードの かず', 'cards', cardOpts),
+          seg('ことば', 'words', [[true, 'なまえを かく'], [false, 'えだけ']]),
+          seg('こたえの ページ', 'answer', [[true, 'つける'], [false, 'つけない']]),
+          seg('まいすう', 'pages', [[1, '1まい'], [2, '2まい'], [3, '3まい']]),
+          h('div', { class: 'btns', style: 'margin-top:16px' },
+            h('button', { type: 'button', class: 'btn', onclick: re }, '🔄 べつの もんだい'),
+            h('button', { type: 'button', class: 'btn blue', onclick: doPrint }, '🖨️ いんさつ する')),
+          h('p', { class: 'note' }, 'いんさつの せってい：よう紙 A4・たて、よはく「なし」（または さいしょう）、「背景の グラフィック」オンが おすすめです。')),
+        prev));
+    const W = Math.max(240, (prev.clientWidth || 600) - 24), sc = Math.min(1, W / (210 * MM));
+    pr.html.forEach(pg => {
+      const w = h('div', { class: 'pwrap', style: 'width:' + (210 * MM * sc) + 'px;height:' + (297 * MM * sc) + 'px', html: pg });
+      w.firstChild.style.transform = 'scale(' + sc + ')';
+      prev.appendChild(w);
+    });
+  }
+  function doPrint() {
+    const root = $('#printRoot'); root.innerHTML = pr.html.join('');
+    setTimeout(() => { window.print(); }, 60);
+  }
+  window.addEventListener('afterprint', () => { $('#printRoot').innerHTML = ''; });
+
+  /* ============================================================
+     先生用せってい
+     ============================================================ */
+  let editId = null;
+  function openSettings() { if (canSpeak) speechSynthesis.cancel(); renderSettings(); $('#settings').classList.add('open'); $('#settings').scrollTop = 0; }
+  function closeSettings() { if (!$('#settings').classList.contains('open')) return; persist(); $('#settings').classList.remove('open'); document.body.classList.toggle('calm', !!st.calm); if (screen === 'home') renderHome(); else if (screen === 'play' && G) { /* つぎの ラウンドから はんえい */ } }
+  function refresh() { const m = $('#settings'), y = m.scrollTop; renderSettings(); m.scrollTop = y; }
+  function set(k, v) { st[k] = v; persist(); refresh(); }
+  function newBin(i) { return { n: 'なかま' + (i + 1), i: '', c: BIN_COLORS[i % 8], items: [] }; }
+  function inp(value, onInput, style, ph) { return h('input', { type: 'text', value: value || '', style: style || '', placeholder: ph || '', oninput: e => { onInput(e.target.value); persistSoon(); } }); }
+  function toData(file) {
+    return new Promise((res, rej) => { const u = URL.createObjectURL(file), img = new Image(); img.onload = () => { const sc = Math.min(1, 320 / Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc); const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(u); res(c.toDataURL('image/jpeg', .78)); }; img.onerror = () => { URL.revokeObjectURL(u); rej(); }; img.src = u; });
+  }
+  function editorEl(t) {
+    const box = h('div', { class: 'editor' });
+    box.append(h('div', { class: 'crow' }, h('span', null, 'なまえ'), inp(t.name, v => { t.name = v; }, 'flex:1;min-width:180px'), h('span', null, 'マーク'), inp(t.icon, v => { t.icon = v; }, 'width:80px', '📦')));
+    t.bins.forEach((b, bi) => {
+      const d = { e: '', n: '' };
+      box.append(h('div', { class: 'ebin', style: '--c:' + b.c },
+        h('div', { class: 'crow' }, h('b', null, 'はこ ' + (bi + 1)), inp(b.n, v => { b.n = v; }, 'flex:1;min-width:140px', 'なかまの なまえ'), h('span', null, 'マーク'), inp(b.i, v => { b.i = v; }, 'width:80px', 'えもじ'),
+          t.bins.length > 2 ? h('button', { type: 'button', class: 'btn warn', onclick: () => { if (confirm('はこ ' + (bi + 1) + ' を けしますか？')) { t.bins.splice(bi, 1); persist(); refresh(); } } }, 'はこを けす') : null),
+        h('div', { class: 'colors' }, BIN_COLORS.map(c => h('button', { type: 'button', class: 'cchip' + (b.c === c ? ' on' : ''), style: 'background:' + c, 'aria-label': 'いろ', onclick: () => { b.c = c; persist(); refresh(); } }))),
+        h('div', { class: 'eitems' }, b.items.length ? b.items.map((x, ii) => h('span', { class: 'eitem' },
+          h('span', { class: 'ev ' + visClass(itemOf(x)), html: visHTML(itemOf(x)) }), x.n || '',
+          h('button', { type: 'button', 'aria-label': 'けす', onclick: () => { b.items.splice(ii, 1); persist(); refresh(); } }, '✕'))) : h('span', { class: 'note' }, 'まだ カードが ありません')),
+        h('div', { class: 'crow' }, inp('', v => { d.e = v; }, 'width:90px', 'えもじ'), inp('', v => { d.n = v; }, 'width:170px', 'なまえ（よみあげ）'),
+          h('button', { type: 'button', class: 'btn ok', onclick: () => { const e = d.e.trim(), n = d.n.trim(); if (!e && !n) { toast('えもじ か なまえを いれてください'); return; } b.items.push({ e: e || n, n: n }); persist(); refresh(); } }, '＋ ついか'),
+          h('label', { class: 'btn' }, '📷 しゃしんで ついか', h('input', { type: 'file', accept: 'image/*', hidden: true, onchange: e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return; toData(f).then(img => { b.items.push({ e: '', n: d.n.trim(), img: img }); persist(); refresh(); }).catch(() => toast('しゃしんを よみこめませんでした')); } })))));
+    });
+    box.append(h('div', { class: 'btns' },
+      t.bins.length < 4 ? h('button', { type: 'button', class: 'btn', onclick: () => { t.bins.push(newBin(t.bins.length)); persist(); refresh(); } }, '＋ はこを ふやす') : null,
+      h('button', { type: 'button', class: 'btn blue', onclick: () => { persist(); const th = themeById(t.id); if (!th) { toast('はこ 2つ いじょうに カードを いれてください'); return; } closeSettings(); startGame(th); } }, '▶ ためしに あそぶ')));
+    return box;
+  }
+  function renderSettings() {
+    const P = $('#settingsPanel'); P.innerHTML = '';
+    const add = (...xs) => xs.flat(Infinity).forEach(x => { if (x !== null && x !== undefined && x !== false) P.append(x); });
+    const seg = (label, key, opts, note) => [h('div', { class: 'seglabel' }, label), h('div', { class: 'seg' }, opts.map(o => h('button', { type: 'button', class: String(st[key]) === String(o[0]) ? 'on' : '', onclick: () => set(key, o[0]) }, o[1]))), note ? h('p', { class: 'note' }, note) : null];
+    const chk = (key, label) => h('label', { class: 'row' }, h('span', null, label), h('input', { type: 'checkbox', checked: !!st[key], onchange: e => { st[key] = e.target.checked; persist(); } }));
+    add(
+      h('div', { class: 'panel-head' }, h('h2', null, '⚙️ 先生用せってい'), h('button', { type: 'button', class: 'btn ok', onclick: closeSettings }, 'とじる')),
+      h('p', { class: 'note' }, '右上の ⚙️ を 1.5秒 ながおしで ひらきます（Shift＋S でも）。せっていは この端末に 保存されます。あそんでいる とちゅうに かえた ときは、つぎの もんだいから はんえい されます。'),
+      h('h3', null, 'あそびかた'),
+      seg('モード', 'mode', MODES.map(m => [m.id, m.e + ' ' + m.n])),
+      st.mode !== 'odd' ? [
+        seg('カードの まいすう', 'cards', [[4, '4'], [6, '6'], [8, '8'], [10, '10'], [12, '12'], [16, '16']]),
+        st.mode === 'sort' ? seg('はこの かず', 'bins', [['auto', 'おまかせ'], [2, '2'], [3, '3'], [4, '4']], 'テーマに ある はこの かずより おおくは なりません。はこが おおい テーマ（いろ など）は、まいかい ちがう はこが でます。') : null,
+        seg('だしかた', 'deal', [['all', 'ぜんぶ ならべる'], ['one', '1まいずつ（しゅうちゅう）']]),
+        seg('くりかえし', 'rounds', [[1, '1かい'], [2, '2かい'], [3, '3かい'], [5, '5かい']])
+      ] : [
+        seg('ならべる カード', 'oddN', [[3, '3まい'], [4, '4まい'], [5, '5まい'], [6, '6まい']]),
+        seg('もんだいの かず', 'oddQ', [[3, '3もん'], [5, '5もん'], [8, '8もん'], [10, '10もん']])
+      ],
+      h('h3', null, 'みため'),
+      seg('はこの しるし', 'label', [['both', 'え と ことば'], ['word', 'ことばだけ'], ['pic', 'えだけ']], '「ことばだけ」に すると、もじを よむ れんしゅうに なります。'),
+      chk('names', '🏷️ カードに なまえを かく'),
+      chk('big', '🔍 カードを おおきく する'),
+      h('h3', null, 'たすけ'),
+      seg('まちがえた ときの ヒント（ただしい はこが ひかる）', 'hint', [['none', 'なし'], ['after2', '2かい まちがえたら'], ['after1', '1かい まちがえたら'], ['always', 'いつも（まちがえない）']]),
+      chk('tap', '👆 タップでも うごかせる（カードを タップ → はこを タップ）'),
+      h('h3', null, 'おと・こえ'),
+      chk('voice', '🗣️ こえで よみあげる'), chk('voiceItem', '🗣️ カードを もったら なまえを よむ'), chk('sound', '🔔 こうかおん'),
+      h('label', { class: 'row' }, h('span', null, '🔊 おとの おおきさ'), h('input', { type: 'range', min: '0', max: '1', step: '0.1', value: st.volume, onchange: e => { st.volume = +e.target.value; persist(); sfx.ok(3); } })),
+      h('label', { class: 'row' }, h('span', null, '🐢 よみあげの はやさ'), h('input', { type: 'range', min: '0.6', max: '1.3', step: '0.05', value: st.rate, onchange: e => { st.rate = +e.target.value; persist(); speak('りんごは くだもの'); } })),
+      chk('calm', '🌙 えんしゅつを ひかえめに（かんかくが びんかんな こ）'),
+      h('h3', null, 'じぶんで つくる なかまわけ'),
+      h('p', { class: 'note' }, '学校の 実物の 写真や、クラスで つかう ことばで テーマを つくれます。はこは 2〜4こ。カードは えもじ・もじ・写真で つくれます。ホームの「じぶんで つくった」に でます。'),
+      custom.map(t => [
+        h('div', { class: 'ctheme' }, h('span', { class: 'emo', style: 'font-size:30px' }, t.icon || '📦'),
+          h('span', { style: 'flex:1' }, t.name || 'じぶんの なかまわけ', h('small', null, '　はこ ' + t.bins.length + '・カード ' + t.bins.reduce((a, b) => a + b.items.length, 0) + 'まい')),
+          h('button', { type: 'button', class: 'btn', onclick: () => { editId = editId === t.id ? null : t.id; refresh(); } }, editId === t.id ? '▲ とじる' : '✏️ へんしゅう'),
+          h('button', { type: 'button', class: 'btn warn', onclick: () => { if (confirm('「' + (t.name || '') + '」を けしますか？')) { custom.splice(custom.indexOf(t), 1); persist(); refresh(); } } }, 'けす')),
+        editId === t.id ? editorEl(t) : null
+      ]),
+      h('div', { class: 'btns' }, h('button', { type: 'button', class: 'btn ok', onclick: () => { const t = { id: 'c' + uid(), name: 'じぶんの なかまわけ', icon: '📦', bins: [newBin(0), newBin(1)] }; custom.push(t); editId = t.id; persist(); refresh(); } }, '＋ あたらしい テーマを つくる')),
+      h('h3', null, 'きろく'),
+      h('div', { class: 'loglist' }, log.length ? log.slice(-8).reverse().map(l => h('div', null, l.d + ' ' + (l.at || '') + '　' + l.theme + '（' + (l.mode || '') + '）' + l.n + 'まい・まちがい ' + l.miss + (l.stop ? '・とちゅうまで' : ''))) : 'まだ ありません'),
+      h('div', { class: 'btns' }, h('button', { type: 'button', class: 'btn', onclick: exportCsv }, '⬇ CSV で かきだす'),
+        h('button', { type: 'button', class: 'btn warn', onclick: () => { if (confirm('きろくを ぜんぶ けしますか？')) { log.length = 0; persist(); refresh(); } } }, 'きろくを けす')),
+      h('h3', null, 'バックアップ（べつの iPad へ うつす）'),
+      h('div', { class: 'btns' }, h('button', { type: 'button', class: 'btn', onclick: exportJson }, '⬇ ファイルに ほぞん'),
+        h('label', { class: 'btn' }, '⬆ ファイルから よみこむ', h('input', { type: 'file', accept: 'application/json,.json', hidden: true, onchange: importJson }))),
+      h('div', { class: 'btns', style: 'margin-top:24px' }, h('button', { type: 'button', class: 'btn ok', onclick: closeSettings }, 'とじる')),
+      h('div', { class: 'mieel-foot' }, h('div', { class: 'mieel-brand' }, h('span', { class: 'orb-mini' }), h('strong', null, 'MieeL'), h('a', { href: 'https://www.mieel-support-school.com/', target: '_blank', rel: 'noopener' }, 'www.mieel-support-school.com')), '© なかまわけ（特別支援教育向け）')
+    );
+  }
+  function download(name, text, type) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: type })); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 800); }
+  function exportCsv() {
+    const rows = [['日にち', '時刻', 'テーマ', 'モード', 'できたまい数', 'まちがい', 'かかった秒', 'とちゅうまで']].concat(log.map(l => [l.d, l.at || '', l.theme, l.mode || '', l.n, l.miss, l.sec, l.stop ? '○' : '']));
+    download('nakamawake.csv', '﻿' + rows.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\r\n'), 'text/csv');
+  }
+  function exportJson() { download('nakamawake-backup.json', JSON.stringify({ app: 'nakamawake', v: 1, settings: st, custom: custom, log: log }), 'application/json'); }
+  function importJson(e) {
+    const f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try {
+        const o = JSON.parse(String(r.result)); if (!o || o.app !== 'nakamawake') throw new Error();
+        if (!confirm('よみこむと、いまの せってい・じぶんで つくった テーマ・きろくが おきかわります。よろしいですか？')) return;
+        Object.assign(st, DEF, o.settings || {}); custom.length = 0; (o.custom || []).forEach(x => custom.push(x)); log.length = 0; (o.log || []).forEach(x => log.push(x));
+        persist(); refresh(); toast('よみこみました');
+      } catch (err) { toast('この ファイルは よみこめません'); }
+    };
+    r.readAsText(f);
+  }
+  function bindGear() {
+    const g = $('#gear'); let t = null; const c = () => { clearTimeout(t); g.classList.remove('pressing'); };
+    g.addEventListener('pointerdown', e => { e.preventDefault(); g.classList.add('pressing'); t = setTimeout(() => { c(); openSettings(); }, 1500); });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => g.addEventListener(ev, c));
+    g.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => { if (e.shiftKey && (e.key === 'S' || e.key === 's') && !/INPUT|SELECT|TEXTAREA/.test((e.target || {}).tagName || '')) openSettings(); if (e.key === 'Escape') { closeSettings(); closePrint(); } });
+    $('#settings').addEventListener('click', e => { if (e.target.id === 'settings') closeSettings(); });
+    $('#printModal').addEventListener('click', e => { if (e.target.id === 'printModal') closePrint(); });
+  }
+  function makeTouchIcon() { try { const c = document.createElement('canvas'); c.width = c.height = 180; const g = c.getContext('2d'); g.fillStyle = '#8CE99A'; g.fillRect(0, 0, 180, 180); g.font = '118px "Apple Color Emoji","Segoe UI Emoji",sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('🧺', 90, 98); $('#touchIcon').href = c.toDataURL(); } catch (e) { /* 無視 */ } }
+
+  document.body.classList.toggle('calm', !!st.calm);
+  bindGear(); makeTouchIcon();
+  if (canSpeak) { loadVoice(); speechSynthesis.onvoiceschanged = loadVoice; }
+  document.addEventListener('gesturestart', e => e.preventDefault());
+  $('#homeBtn').addEventListener('click', () => { if (tapOk(500)) renderHome(); });
+  $('#printBtn').addEventListener('click', () => { if (tapOk(500)) { if (G) pr.theme = G.theme.id; openPrint(); } });
+  window.__nk = { get G() { return G; }, st: st, themes: allThemes, pr: pr };   // テスト用
+  renderHome();
+})();
+</script>
+</body>
+</html>
